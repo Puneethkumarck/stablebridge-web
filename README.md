@@ -15,24 +15,27 @@ Both portals communicate through the **S10 API Gateway** (`api.stablebridge.io`)
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 15 (App Router) |
-| Language | TypeScript 5.7+ (strict) |
-| State | TanStack Query v5 + Zustand |
-| UI | shadcn/ui + Tailwind CSS 4 + Radix UI |
-| API Client | OpenAPI Generator (typescript-fetch) |
-| Testing | Vitest + Testing Library + Playwright + MSW |
-| Build | Turborepo + pnpm 9 |
-| Runtime | Node.js 22 LTS |
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| Framework | Next.js (App Router) | 16.x |
+| Language | TypeScript (strict) | 5.9+ |
+| React | React | 19.x |
+| State | TanStack Query + Zustand | TQ 5.90+ / Zustand 5.x |
+| UI | shadcn/ui + Tailwind CSS + Radix UI | TW 4.2+ |
+| Forms | React Hook Form + Zod | RHF 7.71+ / Zod 4.x |
+| API Client | Orval (OpenAPI codegen) | 8.5+ |
+| Testing | Vitest + Testing Library + Playwright + MSW | Vitest 4.0+ / PW 1.58+ / MSW 2.12+ |
+| Build | Turborepo + pnpm | Turbo 2.8+ / pnpm 10.x |
+| Runtime | Node.js LTS | 24.x (Krypton) |
+| Linting | ESLint + Prettier | ESLint 10.x / Prettier 3.8+ |
 
 ## Repository Structure
 
 ```
 stablebridge-web/
 ├── apps/
-│   ├── merchant-portal/          # Next.js 15 — merchant-facing
-│   └── admin-portal/             # Next.js 15 — internal ops
+│   ├── merchant-portal/          # Next.js 16 — merchant-facing
+│   └── admin-portal/             # Next.js 16 — internal ops
 ├── packages/
 │   ├── @stablebridge/api-client/ # OpenAPI-generated typed API client
 │   ├── @stablebridge/auth/       # JWT, RBAC hooks, middleware
@@ -69,7 +72,7 @@ Backend repo: [stablecoin-payments](https://github.com/Puneethkumarck/stablecoin
 ## Getting Started
 
 ```bash
-# Prerequisites: Node.js 22, pnpm 9
+# Prerequisites: Node.js 24 LTS, pnpm 10
 pnpm install
 pnpm turbo dev
 ```

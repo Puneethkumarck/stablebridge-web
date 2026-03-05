@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+
+# Turbo
+.turbo/
+
+# Vercel
+.vercel/
+
+# Debug
+npm-debug.log*
+pnpm-debug.log*
+
+# Documentation (generated locally, not tracked)
+docs/
