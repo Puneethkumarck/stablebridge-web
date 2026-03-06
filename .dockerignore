@@ -1,0 +1,11 @@
+node_modules
+.next
+.turbo
+.git
+.gitignore
+*.md
+.env*
+.vscode
+.idea
+dist
+coverage
