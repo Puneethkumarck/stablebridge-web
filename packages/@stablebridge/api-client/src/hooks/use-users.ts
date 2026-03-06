@@ -1,12 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { DataResponse, MerchantUser, PageResponse, Role } from '@stablebridge/types';
+import type { DataResponse, MerchantUser, PageResponse } from '@stablebridge/types';
 import { useApiClient } from '../provider';
 import { userKeys } from '../keys/users';
 
 interface ListUsersParams {
   merchantId: string;
-  role?: Role;
-  active?: boolean;
+  status?: string;
   page?: number;
   size?: number;
 }
@@ -41,9 +40,8 @@ export function useMerchantUser(merchantId: string, userId: string) {
 
 interface InviteUserRequest {
   email: string;
-  firstName: string;
-  lastName: string;
-  role: Role;
+  fullName: string;
+  roleId: string;
 }
 
 export function useInviteUser(merchantId: string) {
@@ -64,25 +62,24 @@ export function useInviteUser(merchantId: string) {
   });
 }
 
-interface UpdateUserRequest {
-  role?: Role;
-  active?: boolean;
+interface ChangeUserRoleRequest {
+  roleId: string;
 }
 
-export function useUpdateUser(merchantId: string, userId: string) {
+export function useChangeUserRole(merchantId: string, userId: string) {
   const client = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: UpdateUserRequest) =>
+    mutationFn: (data: ChangeUserRoleRequest) =>
       client
-        .patch<DataResponse<MerchantUser>>(
-          `/merchants/${merchantId}/users/${userId}`,
+        .patch<DataResponse<{ userId: string; roleId: string; roleName: string; merchantId: string }>>(
+          `/merchants/${merchantId}/users/${userId}/role`,
           { body: data },
         )
         .then((r) => r.data),
-    onSuccess: (user) => {
-      queryClient.setQueryData(userKeys.detail(merchantId, userId), user);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userKeys.detail(merchantId, userId) });
       queryClient.invalidateQueries({ queryKey: userKeys.lists() });
     },
   });
@@ -100,7 +97,7 @@ export function useSuspendUser(merchantId: string) {
   return useMutation({
     mutationFn: ({ userId, ...body }: SuspendUserRequest & { userId: string }) =>
       client
-        .post<DataResponse<MerchantUser>>(
+        .post<DataResponse<{ userId: string; status: string; suspendedAt: string }>>(
           `/merchants/${merchantId}/users/${userId}/suspend`,
           { body },
         )
@@ -118,7 +115,7 @@ export function useReactivateUser(merchantId: string) {
   return useMutation({
     mutationFn: (userId: string) =>
       client
-        .post<DataResponse<MerchantUser>>(
+        .post<DataResponse<{ userId: string; status: string; activatedAt: string }>>(
           `/merchants/${merchantId}/users/${userId}/reactivate`,
         )
         .then((r) => r.data),

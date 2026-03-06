@@ -1,15 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { DataResponse, Permission } from '@stablebridge/types';
+import type { DataResponse, PageResponse } from '@stablebridge/types';
 import { useApiClient } from '../provider';
 import { userKeys } from '../keys/users';
 
-interface RoleDetail {
-  id?: string;
-  name: string;
-  label?: string;
-  description?: string;
-  permissions: Permission[];
-  builtIn: boolean;
+export interface RoleResponse {
+  roleId: string;
+  roleName: string;
+  description: string | undefined;
+  builtin: boolean;
+  active: boolean;
+  userCount: number;
+  permissions: string[];
+  createdAt: string | undefined;
+  updatedAt: string | undefined;
 }
 
 export function useRoles(merchantId: string) {
@@ -18,20 +21,17 @@ export function useRoles(merchantId: string) {
   return useQuery({
     queryKey: userKeys.roles(merchantId),
     queryFn: ({ signal }) =>
-      client
-        .get<DataResponse<RoleDetail[]>>(
-          `/merchants/${merchantId}/roles`,
-          { signal },
-        )
-        .then((r) => r.data),
+      client.get<PageResponse<RoleResponse>>(
+        `/merchants/${merchantId}/roles`,
+        { signal },
+      ),
   });
 }
 
 interface CreateRoleRequest {
-  name: string;
-  label?: string;
+  roleName: string;
   description?: string;
-  permissions: Permission[];
+  permissions: string[];
 }
 
 export function useCreateRole(merchantId: string) {
@@ -41,7 +41,7 @@ export function useCreateRole(merchantId: string) {
   return useMutation({
     mutationFn: (data: CreateRoleRequest) =>
       client
-        .post<DataResponse<RoleDetail>>(
+        .post<DataResponse<RoleResponse>>(
           `/merchants/${merchantId}/roles`,
           { body: data },
         )
@@ -53,9 +53,7 @@ export function useCreateRole(merchantId: string) {
 }
 
 interface UpdateRoleRequest {
-  label?: string;
-  description?: string;
-  permissions?: Permission[];
+  permissions: string[];
 }
 
 export function useUpdateRole(merchantId: string) {
@@ -65,7 +63,7 @@ export function useUpdateRole(merchantId: string) {
   return useMutation({
     mutationFn: ({ roleId, ...data }: UpdateRoleRequest & { roleId: string }) =>
       client
-        .patch<DataResponse<RoleDetail>>(
+        .patch<DataResponse<RoleResponse>>(
           `/merchants/${merchantId}/roles/${roleId}`,
           { body: data },
         )

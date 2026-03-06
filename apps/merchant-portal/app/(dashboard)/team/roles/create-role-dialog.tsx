@@ -32,8 +32,8 @@ const ALL_PERMISSIONS: { value: Permission; label: string; group: string }[] = [
 ];
 
 const schema = z.object({
-  name: z.string().min(1, 'Role name is required'),
-  description: z.string().optional(),
+  roleName: z.string().min(2, 'Role name is required').max(50),
+  description: z.string().max(255).optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -72,7 +72,7 @@ export function CreateRoleDialog({ merchantId, open, onOpenChange }: CreateRoleD
   async function onSubmit(data: FormData) {
     try {
       await createRole.mutateAsync({
-        name: data.name,
+        roleName: data.roleName,
         ...(data.description ? { description: data.description } : {}),
         permissions: [...selectedPermissions],
       });
@@ -112,15 +112,15 @@ export function CreateRoleDialog({ merchantId, open, onOpenChange }: CreateRoleD
           ) : null}
 
           <div className="space-y-2">
-            <Label htmlFor="name">Role Name</Label>
+            <Label htmlFor="roleName">Role Name</Label>
             <Input
-              aria-invalid={errors.name ? 'true' : undefined}
-              id="name"
+              aria-invalid={errors.roleName ? 'true' : undefined}
+              id="roleName"
               placeholder="e.g., Payment Approver"
-              {...register('name')}
+              {...register('roleName')}
             />
-            {errors.name ? (
-              <p className="text-xs text-red-600">{errors.name.message}</p>
+            {errors.roleName ? (
+              <p className="text-xs text-red-600">{errors.roleName.message}</p>
             ) : null}
           </div>
 

@@ -14,6 +14,7 @@ export type {
   MerchantUser,
   Permission,
   Role,
+  RoleSummary,
   UserStatus,
 } from './user';
 

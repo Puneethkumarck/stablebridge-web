@@ -30,8 +30,8 @@ export function useApiKeys(merchantId: string) {
     queryFn: ({ signal }) =>
       client
         .get<DataResponse<ApiKey[]>>(
-          `/merchants/${merchantId}/api-keys`,
-          { signal },
+          '/v1/api-keys',
+          { params: { merchantId }, signal },
         )
         .then((r) => r.data),
   });
@@ -53,7 +53,7 @@ export function useCreateApiKey(merchantId: string) {
     mutationFn: (data: CreateApiKeyRequest) =>
       client
         .post<DataResponse<ApiKeyCreated>>(
-          `/merchants/${merchantId}/api-keys`,
+          '/v1/api-keys',
           { body: { ...data, merchantId } },
         )
         .then((r) => r.data),
@@ -69,7 +69,7 @@ export function useRevokeApiKey(merchantId: string) {
 
   return useMutation({
     mutationFn: (keyId: string) =>
-      client.delete<void>(`/merchants/${merchantId}/api-keys/${keyId}`),
+      client.delete<void>(`/v1/api-keys/${keyId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.apiKeys(merchantId) });
     },

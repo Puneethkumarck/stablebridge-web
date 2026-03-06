@@ -5,8 +5,7 @@ import { authKeys } from '../keys/auth';
 
 interface MfaSetupResponse {
   secret: string;
-  qrCodeUri: string;
-  backupCodes: string[];
+  provisioningUri: string;
 }
 
 interface LoginResponse {
@@ -32,7 +31,7 @@ export function useVerifyMfa(merchantId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { code: string; mfaToken?: string }) =>
+    mutationFn: (data: { totpCode: string; mfaChallengeId?: string }) =>
       client.post<DataResponse<LoginResponse>>(
         `/merchants/${merchantId}/auth/mfa/verify`,
         { body: data },

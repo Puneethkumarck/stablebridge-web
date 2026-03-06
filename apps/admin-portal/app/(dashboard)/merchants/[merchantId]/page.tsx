@@ -3,6 +3,7 @@
 import { use, useState } from 'react';
 import Link from 'next/link';
 import type { MerchantStatus } from '@stablebridge/types';
+import { useAuth } from '@stablebridge/auth';
 import {
   useMerchant,
   useMerchantKybStatus,
@@ -79,6 +80,7 @@ export default function MerchantDetailPage({
   readonly params: Promise<{ merchantId: string }>;
 }) {
   const { merchantId } = use(params);
+  const { user } = useAuth();
   const { data: merchant, isLoading } = useMerchant(merchantId);
   const { data: kybVerification } = useMerchantKybStatus(merchantId);
   const activateMutation = useActivateMerchant();
@@ -117,7 +119,7 @@ export default function MerchantDetailPage({
     switch (activeAction) {
       case 'activate':
         activateMutation.mutate(
-          { merchantId, approvedBy: 'current-admin-id' },
+          { merchantId, approvedBy: user?.id ?? '' },
           { onSuccess },
         );
         break;
