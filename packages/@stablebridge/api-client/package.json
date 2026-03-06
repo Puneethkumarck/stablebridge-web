@@ -1,0 +1,29 @@
+{
+  "name": "@stablebridge/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./hooks": "./src/hooks/index.ts",
+    "./keys": "./src/keys/index.ts"
+  },
+  "scripts": {
+    "generate": "openapi-generator-cli generate -i openapi/iam.yaml -g typescript-fetch -o src/generated/iam --additional-properties=supportsES6=true,typescriptThreePlus=true,withInterfaces=true && openapi-generator-cli generate -i openapi/merchant-onboarding.yaml -g typescript-fetch -o src/generated/merchant-onboarding --additional-properties=supportsES6=true,typescriptThreePlus=true,withInterfaces=true",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --max-warnings 0"
+  },
+  "dependencies": {
+    "@stablebridge/types": "workspace:*",
+    "@stablebridge/utils": "workspace:*",
+    "@tanstack/react-query": "^5.75.5"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.19.1",
+    "@types/react": "^19.1.4",
+    "typescript": "^5.8.3"
+  }
+}

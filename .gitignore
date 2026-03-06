@@ -24,6 +24,10 @@ coverage/
 playwright-report/
 test-results/
 
+# OpenAPI generated code
+packages/@stablebridge/api-client/src/generated/*/
+!packages/@stablebridge/api-client/src/generated/.gitkeep
+
 # Turbo
 .turbo/
 

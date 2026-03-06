@@ -8,6 +8,7 @@
     "lint": "turbo lint",
     "type-check": "turbo type-check",
     "test": "turbo test",
+    "generate-api": "turbo run generate --filter=@stablebridge/api-client",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
