@@ -1,13 +1,13 @@
 openapi: 3.1.0
 info:
   title: S11 Merchant Onboarding API
-  description: Merchant onboarding, KYB verification, and lifecycle management
+  description: "Merchant onboarding, KYB verification, and lifecycle management"
   contact:
     name: StableBridge Platform
   version: 1.0.0
 servers:
-- url: http://localhost:8081
-  description: Generated server url
+- url: http://localhost/onboarding
+  description: NGINX Ingress (Kind cluster)
 paths:
   /api/v1/merchants:
     get:
@@ -45,42 +45,42 @@ paths:
           - SUSPENDED
           - CLOSED
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/PageResponseMerchantResponse'
+                $ref: "#/components/schemas/PageResponseMerchantResponse"
     post:
       tags:
       - merchant-controller
@@ -89,45 +89,45 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MerchantApplicationRequest'
+              $ref: "#/components/schemas/MerchantApplicationRequest"
         required: true
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '201':
+                $ref: "#/components/schemas/ApiError"
+        "201":
           description: Created
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/MerchantApplicationResponse'
+                $ref: "#/components/schemas/MerchantApplicationResponse"
   /api/v1/merchants/{merchantId}/suspend:
     post:
       tags:
@@ -144,40 +144,40 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SuspendMerchantRequest'
+              $ref: "#/components/schemas/SuspendMerchantRequest"
         required: true
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '202':
+                $ref: "#/components/schemas/ApiError"
+        "202":
           description: Accepted
   /api/v1/merchants/{merchantId}/reactivate:
     post:
@@ -192,37 +192,37 @@ paths:
           type: string
           format: uuid
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '202':
+                $ref: "#/components/schemas/ApiError"
+        "202":
           description: Accepted
   /api/v1/merchants/{merchantId}/kyb/start:
     post:
@@ -237,37 +237,37 @@ paths:
           type: string
           format: uuid
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '202':
+                $ref: "#/components/schemas/ApiError"
+        "202":
           description: Accepted
   /api/v1/merchants/{merchantId}/documents:
     post:
@@ -285,45 +285,45 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DocumentUploadRequest'
+              $ref: "#/components/schemas/DocumentUploadRequest"
         required: true
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '201':
+                $ref: "#/components/schemas/ApiError"
+        "201":
           description: Created
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DocumentUploadResponse'
+                $ref: "#/components/schemas/DocumentUploadResponse"
   /api/v1/merchants/{merchantId}/corridors:
     post:
       tags:
@@ -346,45 +346,45 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ApproveCorridorRequest'
+              $ref: "#/components/schemas/ApproveCorridorRequest"
         required: true
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '201':
+                $ref: "#/components/schemas/ApiError"
+        "201":
           description: Created
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/CorridorResponse'
+                $ref: "#/components/schemas/CorridorResponse"
   /api/v1/merchants/{merchantId}/close:
     post:
       tags:
@@ -401,39 +401,39 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CloseMerchantRequest'
+              $ref: "#/components/schemas/CloseMerchantRequest"
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '202':
+                $ref: "#/components/schemas/ApiError"
+        "202":
           description: Accepted
   /api/v1/merchants/{merchantId}/activate:
     post:
@@ -451,45 +451,45 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ActivateMerchantRequest'
+              $ref: "#/components/schemas/ActivateMerchantRequest"
         required: true
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/MerchantResponse'
+                $ref: "#/components/schemas/MerchantResponse"
   /api/internal/webhooks/onfido:
     post:
       tags:
@@ -508,37 +508,37 @@ paths:
               type: string
         required: true
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
   /api/v1/merchants/{merchantId}:
     get:
@@ -553,42 +553,42 @@ paths:
           type: string
           format: uuid
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/MerchantResponse'
+                $ref: "#/components/schemas/MerchantResponse"
     patch:
       tags:
       - merchant-controller
@@ -604,45 +604,45 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateMerchantRequest'
+              $ref: "#/components/schemas/UpdateMerchantRequest"
         required: true
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/MerchantResponse'
+                $ref: "#/components/schemas/MerchantResponse"
   /api/v1/merchants/{merchantId}/rate-limit-tier:
     patch:
       tags:
@@ -659,45 +659,45 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateRateLimitTierRequest'
+              $ref: "#/components/schemas/UpdateRateLimitTierRequest"
         required: true
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/MerchantResponse'
+                $ref: "#/components/schemas/MerchantResponse"
   /api/v1/merchants/{merchantId}/kyb:
     get:
       tags:
@@ -711,42 +711,42 @@ paths:
           type: string
           format: uuid
       responses:
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/KybStatusResponse'
+                $ref: "#/components/schemas/KybStatusResponse"
 components:
   schemas:
     ApiError:
@@ -778,7 +778,7 @@ components:
           minLength: 1
         ownershipPct:
           type: number
-          maximum: 100.0
+          maximum: 100.00
           minimum: 0.01
         isPoliticallyExposed:
           type: boolean
@@ -840,11 +840,11 @@ components:
           type: string
           minLength: 1
         registeredAddress:
-          $ref: '#/components/schemas/BusinessAddressDto'
+          $ref: "#/components/schemas/BusinessAddressDto"
         beneficialOwners:
           type: array
           items:
-            $ref: '#/components/schemas/BeneficialOwnerDto'
+            $ref: "#/components/schemas/BeneficialOwnerDto"
           minItems: 1
         requestedCorridors:
           type: array
@@ -912,7 +912,7 @@ components:
           minItems: 1
         maxAmountUsd:
           type: number
-          minimum: 1.0
+          minimum: 1.00
         expiresAt:
           type: string
           format: date-time
@@ -1027,7 +1027,7 @@ components:
         websiteUrl:
           type: string
         registeredAddress:
-          $ref: '#/components/schemas/BusinessAddressDto'
+          $ref: "#/components/schemas/BusinessAddressDto"
     UpdateRateLimitTierRequest:
       type: object
       properties:
@@ -1060,9 +1060,9 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/MerchantResponse'
+            $ref: "#/components/schemas/MerchantResponse"
         page:
-          $ref: '#/components/schemas/Page'
+          $ref: "#/components/schemas/Page"
     KybStatusResponse:
       type: object
       properties:

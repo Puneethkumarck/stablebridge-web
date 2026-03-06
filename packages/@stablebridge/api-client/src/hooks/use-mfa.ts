@@ -21,7 +21,8 @@ export function useSetupMfa(merchantId: string) {
   return useMutation({
     mutationFn: () =>
       client
-        .post<DataResponse<MfaSetupResponse>>(`/merchants/${merchantId}/auth/mfa/setup`)
+        // TODO: Backend spec requires userId — /iam/v1/merchants/{mid}/users/{uid}/mfa/setup
+        .post<DataResponse<MfaSetupResponse>>(`/iam/v1/merchants/${merchantId}/auth/mfa/setup`)
         .then((r) => r.data),
   });
 }
@@ -33,7 +34,7 @@ export function useVerifyMfa(merchantId: string) {
   return useMutation({
     mutationFn: (data: { totpCode: string; mfaChallengeId?: string }) =>
       client.post<DataResponse<LoginResponse>>(
-        `/merchants/${merchantId}/auth/mfa/verify`,
+        `/iam/v1/merchants/${merchantId}/auth/mfa/verify`,
         { body: data },
       ),
     onSuccess: (response) => {

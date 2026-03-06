@@ -24,7 +24,7 @@ export function useLogin() {
   return useMutation({
     mutationFn: (data: LoginRequest) =>
       client.post<DataResponse<LoginResponse>>(
-        `/merchants/${data.merchantId}/auth/login`,
+        `/iam/v1/merchants/${data.merchantId}/auth/login`,
         { body: { email: data.email, password: data.password } },
       ),
     onSuccess: (response) => {
@@ -40,7 +40,7 @@ export function useLogout() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => client.post<void>('/auth/logout'),
+    mutationFn: () => client.post<void>('/iam/v1/auth/logout'),
     onSuccess: () => {
       queryClient.clear();
     },
@@ -54,7 +54,7 @@ export function useCurrentUser(enabled = true) {
     queryKey: authKeys.me(),
     queryFn: ({ signal }) =>
       client
-        .get<DataResponse<AuthUser>>('/auth/me', { signal })
+        .get<DataResponse<AuthUser>>('/iam/v1/auth/me', { signal })
         .then((r) => r.data),
     enabled,
     staleTime: 5 * 60_000,
@@ -66,7 +66,7 @@ export function useForgotPassword() {
 
   return useMutation({
     mutationFn: ({ merchantId, email }: { merchantId: string; email: string }) =>
-      client.post<void>(`/merchants/${merchantId}/auth/forgot-password`, {
+      client.post<void>(`/iam/v1/merchants/${merchantId}/auth/forgot-password`, {
         body: { email },
       }),
   });
@@ -77,7 +77,7 @@ export function useResetPassword() {
 
   return useMutation({
     mutationFn: ({ merchantId, ...data }: { merchantId: string; token: string; newPassword: string }) =>
-      client.post<void>(`/merchants/${merchantId}/auth/reset-password`, {
+      client.post<void>(`/iam/v1/merchants/${merchantId}/auth/reset-password`, {
         body: data,
       }),
   });

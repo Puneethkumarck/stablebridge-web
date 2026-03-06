@@ -1,14 +1,14 @@
 openapi: 3.1.0
 info:
   title: S10 API Gateway & IAM API
-  description: OAuth2 authentication, API key management, rate limiting, and merchant
-    registry
+  description: "OAuth2 authentication, API key management, rate limiting, and merchant\
+    \ registry"
   contact:
     name: StableBridge Platform
   version: 1.0.0
 servers:
-- url: http://localhost:8080
-  description: Generated server url
+- url: http://localhost/gateway
+  description: NGINX Ingress (Kind cluster)
 paths:
   /v1/merchants:
     get:
@@ -23,48 +23,48 @@ paths:
           type: string
           format: uuid
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '429':
+                $ref: "#/components/schemas/ApiError"
+        "429":
           description: Too Many Requests
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/MerchantResponse'
+                $ref: "#/components/schemas/MerchantResponse"
     post:
       tags:
       - merchant-controller
@@ -73,51 +73,51 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateMerchantRequest'
+              $ref: "#/components/schemas/CreateMerchantRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '429':
+                $ref: "#/components/schemas/ApiError"
+        "429":
           description: Too Many Requests
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '201':
+                $ref: "#/components/schemas/ApiError"
+        "201":
           description: Created
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/MerchantResponse'
+                $ref: "#/components/schemas/MerchantResponse"
   /v1/merchants/{merchantId}/oauth-clients:
     get:
       tags:
@@ -131,50 +131,50 @@ paths:
           type: string
           format: uuid
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '429':
+                $ref: "#/components/schemas/ApiError"
+        "429":
           description: Too Many Requests
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OAuthClientSummaryResponse'
+                  $ref: "#/components/schemas/OAuthClientSummaryResponse"
     post:
       tags:
       - o-auth-client-controller
@@ -190,51 +190,51 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateOAuthClientRequest'
+              $ref: "#/components/schemas/CreateOAuthClientRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '429':
+                $ref: "#/components/schemas/ApiError"
+        "429":
           description: Too Many Requests
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '201':
+                $ref: "#/components/schemas/ApiError"
+        "201":
           description: Created
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/OAuthClientResponse'
+                $ref: "#/components/schemas/OAuthClientResponse"
   /v1/auth/token:
     post:
       tags:
@@ -244,51 +244,51 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenRequest'
+              $ref: "#/components/schemas/TokenRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '429':
+                $ref: "#/components/schemas/ApiError"
+        "429":
           description: Too Many Requests
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/TokenResponse'
+                $ref: "#/components/schemas/TokenResponse"
   /v1/auth/revoke:
     post:
       tags:
@@ -298,46 +298,46 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenRevokeRequest'
+              $ref: "#/components/schemas/TokenRevokeRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '429':
+                $ref: "#/components/schemas/ApiError"
+        "429":
           description: Too Many Requests
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
   /v1/api-keys:
     post:
@@ -348,51 +348,51 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateApiKeyRequest'
+              $ref: "#/components/schemas/CreateApiKeyRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '429':
+                $ref: "#/components/schemas/ApiError"
+        "429":
           description: Too Many Requests
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '201':
+                $ref: "#/components/schemas/ApiError"
+        "201":
           description: Created
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiKeyResponse'
+                $ref: "#/components/schemas/ApiKeyResponse"
   /v1/merchants/{merchantId}:
     get:
       tags:
@@ -406,91 +406,91 @@ paths:
           type: string
           format: uuid
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '429':
+                $ref: "#/components/schemas/ApiError"
+        "429":
           description: Too Many Requests
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/MerchantResponse'
+                $ref: "#/components/schemas/MerchantResponse"
   /.well-known/jwks.json:
     get:
       tags:
       - auth-controller
       operationId: jwks
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '429':
+                $ref: "#/components/schemas/ApiError"
+        "429":
           description: Too Many Requests
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             application/json:
@@ -509,43 +509,43 @@ paths:
           type: string
           format: uuid
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '429':
+                $ref: "#/components/schemas/ApiError"
+        "429":
           description: Too Many Requests
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '204':
+                $ref: "#/components/schemas/ApiError"
+        "204":
           description: No Content
 components:
   schemas:
@@ -591,7 +591,7 @@ components:
         corridors:
           type: array
           items:
-            $ref: '#/components/schemas/CorridorDto'
+            $ref: "#/components/schemas/CorridorDto"
       required:
       - externalId
     MerchantResponse:

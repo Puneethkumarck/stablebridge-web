@@ -22,7 +22,7 @@ export function useRoles(merchantId: string) {
     queryKey: userKeys.roles(merchantId),
     queryFn: ({ signal }) =>
       client.get<PageResponse<RoleResponse>>(
-        `/merchants/${merchantId}/roles`,
+        `/iam/v1/merchants/${merchantId}/roles`,
         { signal },
       ),
   });
@@ -42,7 +42,7 @@ export function useCreateRole(merchantId: string) {
     mutationFn: (data: CreateRoleRequest) =>
       client
         .post<DataResponse<RoleResponse>>(
-          `/merchants/${merchantId}/roles`,
+          `/iam/v1/merchants/${merchantId}/roles`,
           { body: data },
         )
         .then((r) => r.data),
@@ -64,7 +64,7 @@ export function useUpdateRole(merchantId: string) {
     mutationFn: ({ roleId, ...data }: UpdateRoleRequest & { roleId: string }) =>
       client
         .patch<DataResponse<RoleResponse>>(
-          `/merchants/${merchantId}/roles/${roleId}`,
+          `/iam/v1/merchants/${merchantId}/roles/${roleId}`,
           { body: data },
         )
         .then((r) => r.data),
@@ -80,7 +80,7 @@ export function useDeleteRole(merchantId: string) {
 
   return useMutation({
     mutationFn: (roleId: string) =>
-      client.delete<void>(`/merchants/${merchantId}/roles/${roleId}`),
+      client.delete<void>(`/iam/v1/merchants/${merchantId}/roles/${roleId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.roles(merchantId) });
     },

@@ -31,7 +31,7 @@ export function useOAuthClients(merchantId: string) {
     queryFn: ({ signal }) =>
       client
         .get<DataResponse<OAuthClient[]>>(
-          `/merchants/${merchantId}/oauth-clients`,
+          `/gateway/v1/merchants/${merchantId}/oauth-clients`,
           { signal },
         )
         .then((r) => r.data),
@@ -52,7 +52,7 @@ export function useCreateOAuthClient(merchantId: string) {
     mutationFn: (data: CreateOAuthClientRequest) =>
       client
         .post<DataResponse<OAuthClientCreated>>(
-          `/merchants/${merchantId}/oauth-clients`,
+          `/gateway/v1/merchants/${merchantId}/oauth-clients`,
           { body: data },
         )
         .then((r) => r.data),

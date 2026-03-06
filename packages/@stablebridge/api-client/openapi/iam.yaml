@@ -1,13 +1,13 @@
 openapi: 3.1.0
 info:
   title: S13 Merchant IAM API
-  description: User authentication, roles, permissions, and team management
+  description: "User authentication, roles, permissions, and team management"
   contact:
     name: StableBridge Platform
   version: 1.0.0
 servers:
-- url: http://localhost:8083
-  description: Generated server url
+- url: http://localhost/iam
+  description: NGINX Ingress (Kind cluster)
 paths:
   /v1/merchants/{merchantId}/users/{userId}/suspend:
     post:
@@ -31,63 +31,63 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SuspendUserRequest'
+              $ref: "#/components/schemas/SuspendUserRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DataResponseSuspendUserResponse'
+                $ref: "#/components/schemas/DataResponseSuspendUserResponse"
   /v1/merchants/{merchantId}/users/{userId}/reactivate:
     post:
       tags:
@@ -107,60 +107,60 @@ paths:
           type: string
           format: uuid
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DataResponseReactivateUserResponse'
+                $ref: "#/components/schemas/DataResponseReactivateUserResponse"
   /v1/merchants/{merchantId}/users/{userId}/mfa/setup:
     post:
       tags:
@@ -180,60 +180,60 @@ paths:
           type: string
           format: uuid
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DataResponseMfaSetupResponse'
+                $ref: "#/components/schemas/DataResponseMfaSetupResponse"
   /v1/merchants/{merchantId}/users/{userId}/mfa/activate:
     post:
       tags:
@@ -256,58 +256,58 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MfaActivateRequest'
+              $ref: "#/components/schemas/MfaActivateRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '204':
+                $ref: "#/components/schemas/ApiError"
+        "204":
           description: No Content
   /v1/merchants/{merchantId}/users/invite:
     post:
@@ -325,63 +325,63 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InviteUserRequest'
+              $ref: "#/components/schemas/InviteUserRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '201':
+                $ref: "#/components/schemas/ApiError"
+        "201":
           description: Created
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DataResponseInvitationResponse'
+                $ref: "#/components/schemas/DataResponseInvitationResponse"
   /v1/merchants/{merchantId}/roles:
     get:
       tags:
@@ -415,60 +415,60 @@ paths:
           format: int32
           default: 50
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/PageResponseRoleResponse'
+                $ref: "#/components/schemas/PageResponseRoleResponse"
     post:
       tags:
       - roles-controller
@@ -484,63 +484,63 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateRoleRequest'
+              $ref: "#/components/schemas/CreateRoleRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '201':
+                $ref: "#/components/schemas/ApiError"
+        "201":
           description: Created
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DataResponseRoleResponse'
+                $ref: "#/components/schemas/DataResponseRoleResponse"
   /v1/merchants/{merchantId}/auth/mfa/verify:
     post:
       tags:
@@ -557,63 +557,63 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MfaVerifyRequest'
+              $ref: "#/components/schemas/MfaVerifyRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DataResponseLoginResponse'
+                $ref: "#/components/schemas/DataResponseLoginResponse"
   /v1/merchants/{merchantId}/auth/login:
     post:
       tags:
@@ -630,63 +630,63 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: "#/components/schemas/LoginRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DataResponseObject'
+                $ref: "#/components/schemas/DataResponseObject"
   /v1/invitations/{token}/accept:
     post:
       tags:
@@ -702,63 +702,63 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AcceptInvitationRequest'
+              $ref: "#/components/schemas/AcceptInvitationRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DataResponseUserResponse'
+                $ref: "#/components/schemas/DataResponseUserResponse"
   /v1/auth/refresh:
     post:
       tags:
@@ -768,118 +768,118 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RefreshTokenRequest'
+              $ref: "#/components/schemas/RefreshTokenRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DataResponseRefreshTokenResponse'
+                $ref: "#/components/schemas/DataResponseRefreshTokenResponse"
   /v1/auth/logout:
     post:
       tags:
       - auth-controller
       operationId: logout
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '204':
+                $ref: "#/components/schemas/ApiError"
+        "204":
           description: No Content
   /v1/merchants/{merchantId}/users/{userId}/role:
     patch:
@@ -903,63 +903,63 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChangeUserRoleRequest'
+              $ref: "#/components/schemas/ChangeUserRoleRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DataResponseChangeRoleResponse'
+                $ref: "#/components/schemas/DataResponseChangeRoleResponse"
   /v1/merchants/{merchantId}/roles/{roleId}:
     delete:
       tags:
@@ -979,55 +979,55 @@ paths:
           type: string
           format: uuid
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '204':
+                $ref: "#/components/schemas/ApiError"
+        "204":
           description: No Content
     patch:
       tags:
@@ -1050,63 +1050,63 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateRoleRequest'
+              $ref: "#/components/schemas/UpdateRoleRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DataResponseRoleResponse'
+                $ref: "#/components/schemas/DataResponseRoleResponse"
   /v1/merchants/{merchantId}/users:
     get:
       tags:
@@ -1144,60 +1144,60 @@ paths:
           format: int32
           default: 50
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/PageResponseUserResponse'
+                $ref: "#/components/schemas/PageResponseUserResponse"
   /v1/auth/permissions/check:
     get:
       tags:
@@ -1222,115 +1222,115 @@ paths:
         schema:
           type: string
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/DataResponsePermissionCheckResponse'
+                $ref: "#/components/schemas/DataResponsePermissionCheckResponse"
   /v1/.well-known/jwks.json:
     get:
       tags:
       - auth-controller
       operationId: jwks
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '200':
+                $ref: "#/components/schemas/ApiError"
+        "200":
           description: OK
           content:
             application/json:
@@ -1358,58 +1358,58 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DeactivateUserRequest'
+              $ref: "#/components/schemas/DeactivateUserRequest"
         required: true
       responses:
-        '400':
+        "400":
           description: Bad Request
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '401':
+                $ref: "#/components/schemas/ApiError"
+        "401":
           description: Unauthorized
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Unprocessable Content
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '403':
+                $ref: "#/components/schemas/ApiError"
+        "403":
           description: Forbidden
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '404':
+                $ref: "#/components/schemas/ApiError"
+        "404":
           description: Not Found
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '409':
+                $ref: "#/components/schemas/ApiError"
+        "409":
           description: Conflict
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '410':
+                $ref: "#/components/schemas/ApiError"
+        "410":
           description: Gone
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '500':
+                $ref: "#/components/schemas/ApiError"
+        "500":
           description: Internal Server Error
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '204':
+                $ref: "#/components/schemas/ApiError"
+        "204":
           description: No Content
 components:
   schemas:
@@ -1438,7 +1438,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/SuspendUserResponse'
+          $ref: "#/components/schemas/SuspendUserResponse"
     SuspendUserResponse:
       type: object
       properties:
@@ -1454,7 +1454,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/ReactivateUserResponse'
+          $ref: "#/components/schemas/ReactivateUserResponse"
     ReactivateUserResponse:
       type: object
       properties:
@@ -1470,7 +1470,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/MfaSetupResponse'
+          $ref: "#/components/schemas/MfaSetupResponse"
     MfaSetupResponse:
       type: object
       properties:
@@ -1505,7 +1505,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/InvitationResponse'
+          $ref: "#/components/schemas/InvitationResponse"
     InvitationResponse:
       type: object
       properties:
@@ -1548,7 +1548,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/RoleResponse'
+          $ref: "#/components/schemas/RoleResponse"
     RoleResponse:
       type: object
       properties:
@@ -1585,12 +1585,12 @@ components:
         totpCode:
           type: string
           minLength: 1
-          pattern: \d{6}
+          pattern: "\\d{6}"
     DataResponseLoginResponse:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/LoginResponse'
+          $ref: "#/components/schemas/LoginResponse"
     LoginResponse:
       type: object
       properties:
@@ -1604,7 +1604,7 @@ components:
           type: integer
           format: int32
         user:
-          $ref: '#/components/schemas/UserInfo'
+          $ref: "#/components/schemas/UserInfo"
     UserInfo:
       type: object
       properties:
@@ -1650,7 +1650,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/UserResponse'
+          $ref: "#/components/schemas/UserResponse"
     RoleSummary:
       type: object
       properties:
@@ -1673,7 +1673,7 @@ components:
         fullName:
           type: string
         role:
-          $ref: '#/components/schemas/RoleSummary'
+          $ref: "#/components/schemas/RoleSummary"
         status:
           type: string
         mfaEnabled:
@@ -1700,7 +1700,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/RefreshTokenResponse'
+          $ref: "#/components/schemas/RefreshTokenResponse"
     RefreshTokenResponse:
       type: object
       properties:
@@ -1737,7 +1737,7 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/ChangeRoleResponse'
+          $ref: "#/components/schemas/ChangeRoleResponse"
     UpdateRoleRequest:
       type: object
       properties:
@@ -1768,23 +1768,23 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/UserResponse'
+            $ref: "#/components/schemas/UserResponse"
         page:
-          $ref: '#/components/schemas/Page'
+          $ref: "#/components/schemas/Page"
     PageResponseRoleResponse:
       type: object
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/RoleResponse'
+            $ref: "#/components/schemas/RoleResponse"
         page:
-          $ref: '#/components/schemas/Page'
+          $ref: "#/components/schemas/Page"
     DataResponsePermissionCheckResponse:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/PermissionCheckResponse'
+          $ref: "#/components/schemas/PermissionCheckResponse"
     PermissionCheckResponse:
       type: object
       properties:

@@ -17,7 +17,7 @@ export function useMerchantUsers({ merchantId, ...filters }: ListUsersParams) {
     queryKey: userKeys.list(merchantId, filters),
     queryFn: ({ signal }) =>
       client.get<PageResponse<MerchantUser>>(
-        `/merchants/${merchantId}/users`,
+        `/iam/v1/merchants/${merchantId}/users`,
         { params: filters, signal },
       ),
   });
@@ -31,7 +31,7 @@ export function useMerchantUser(merchantId: string, userId: string) {
     queryFn: ({ signal }) =>
       client
         .get<DataResponse<MerchantUser>>(
-          `/merchants/${merchantId}/users/${userId}`,
+          `/iam/v1/merchants/${merchantId}/users/${userId}`,
           { signal },
         )
         .then((r) => r.data),
@@ -52,7 +52,7 @@ export function useInviteUser(merchantId: string) {
     mutationFn: (data: InviteUserRequest) =>
       client
         .post<DataResponse<MerchantUser>>(
-          `/merchants/${merchantId}/users`,
+          `/iam/v1/merchants/${merchantId}/users/invite`,
           { body: data },
         )
         .then((r) => r.data),
@@ -74,7 +74,7 @@ export function useChangeUserRole(merchantId: string, userId: string) {
     mutationFn: (data: ChangeUserRoleRequest) =>
       client
         .patch<DataResponse<{ userId: string; roleId: string; roleName: string; merchantId: string }>>(
-          `/merchants/${merchantId}/users/${userId}/role`,
+          `/iam/v1/merchants/${merchantId}/users/${userId}/role`,
           { body: data },
         )
         .then((r) => r.data),
@@ -98,7 +98,7 @@ export function useSuspendUser(merchantId: string) {
     mutationFn: ({ userId, ...body }: SuspendUserRequest & { userId: string }) =>
       client
         .post<DataResponse<{ userId: string; status: string; suspendedAt: string }>>(
-          `/merchants/${merchantId}/users/${userId}/suspend`,
+          `/iam/v1/merchants/${merchantId}/users/${userId}/suspend`,
           { body },
         )
         .then((r) => r.data),
@@ -116,7 +116,7 @@ export function useReactivateUser(merchantId: string) {
     mutationFn: (userId: string) =>
       client
         .post<DataResponse<{ userId: string; status: string; activatedAt: string }>>(
-          `/merchants/${merchantId}/users/${userId}/reactivate`,
+          `/iam/v1/merchants/${merchantId}/users/${userId}/reactivate`,
         )
         .then((r) => r.data),
     onSuccess: () => {
@@ -131,7 +131,7 @@ export function useDeactivateUser(merchantId: string) {
 
   return useMutation({
     mutationFn: (userId: string) =>
-      client.delete<void>(`/merchants/${merchantId}/users/${userId}`),
+      client.delete<void>(`/iam/v1/merchants/${merchantId}/users/${userId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() });
     },

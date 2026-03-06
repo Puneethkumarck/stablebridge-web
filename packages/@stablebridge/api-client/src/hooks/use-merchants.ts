@@ -26,7 +26,7 @@ export function useMerchants(params?: ListMerchantsParams) {
   return useQuery({
     queryKey: merchantKeys.list(params),
     queryFn: ({ signal }) =>
-      client.get<PageResponse<Merchant>>('/merchants', {
+      client.get<PageResponse<Merchant>>('/onboarding/api/v1/merchants', {
         ...(params ? { params: params as Record<string, string | number | boolean | undefined> } : {}),
         signal,
       }),
@@ -40,7 +40,7 @@ export function useMerchant(merchantId: string) {
     queryKey: merchantKeys.detail(merchantId),
     queryFn: ({ signal }) =>
       client
-        .get<DataResponse<Merchant>>(`/merchants/${merchantId}`, { signal })
+        .get<DataResponse<Merchant>>(`/onboarding/api/v1/merchants/${merchantId}`, { signal })
         .then((r) => r.data),
   });
 }
@@ -69,7 +69,7 @@ export function useUpdateMerchant(merchantId: string) {
   return useMutation({
     mutationFn: (data: UpdateMerchantRequest) =>
       client
-        .patch<DataResponse<Merchant>>(`/merchants/${merchantId}`, {
+        .patch<DataResponse<Merchant>>(`/onboarding/api/v1/merchants/${merchantId}`, {
           body: data,
         })
         .then((r) => r.data),
@@ -96,7 +96,7 @@ export function useActivateMerchant() {
   return useMutation({
     mutationFn: ({ merchantId, ...data }: ActivateMerchantRequest & { merchantId: string }) =>
       client
-        .post<DataResponse<Merchant>>(`/merchants/${merchantId}/activate`, {
+        .post<DataResponse<Merchant>>(`/onboarding/api/v1/merchants/${merchantId}/activate`, {
           body: data,
         })
         .then((r) => r.data),
@@ -119,7 +119,7 @@ export function useSuspendMerchant() {
 
   return useMutation({
     mutationFn: ({ merchantId, ...body }: SuspendMerchantRequest) =>
-      client.post<void>(`/merchants/${merchantId}/suspend`, {
+      client.post<void>(`/onboarding/api/v1/merchants/${merchantId}/suspend`, {
         body,
       }),
     onSuccess: (_data, variables) => {
@@ -135,7 +135,7 @@ export function useReactivateMerchant() {
 
   return useMutation({
     mutationFn: (merchantId: string) =>
-      client.post<void>(`/merchants/${merchantId}/reactivate`),
+      client.post<void>(`/onboarding/api/v1/merchants/${merchantId}/reactivate`),
     onSuccess: (_data, merchantId) => {
       queryClient.invalidateQueries({ queryKey: merchantKeys.detail(merchantId) });
       queryClient.invalidateQueries({ queryKey: merchantKeys.lists() });
@@ -155,7 +155,7 @@ export function useCloseMerchant() {
 
   return useMutation({
     mutationFn: ({ merchantId, ...body }: CloseMerchantRequest) =>
-      client.post<void>(`/merchants/${merchantId}/close`, {
+      client.post<void>(`/onboarding/api/v1/merchants/${merchantId}/close`, {
         body,
       }),
     onSuccess: (_data, variables) => {
@@ -175,7 +175,7 @@ export function useStartKyb() {
 
   return useMutation({
     mutationFn: (merchantId: string) =>
-      client.post<void>(`/merchants/${merchantId}/kyb/start`),
+      client.post<void>(`/onboarding/api/v1/merchants/${merchantId}/kyb/start`),
     onSuccess: (_data, merchantId) => {
       queryClient.invalidateQueries({ queryKey: merchantKeys.detail(merchantId) });
       queryClient.invalidateQueries({ queryKey: merchantKeys.kybStatus(merchantId) });
@@ -191,7 +191,7 @@ export function useMerchantKybStatus(merchantId: string) {
     queryFn: ({ signal }) =>
       client
         .get<DataResponse<KybVerification>>(
-          `/merchants/${merchantId}/kyb`,
+          `/onboarding/api/v1/merchants/${merchantId}/kyb`,
           { signal },
         )
         .then((r) => r.data),
@@ -217,7 +217,7 @@ export function useApproveCorridor(merchantId: string) {
   return useMutation({
     mutationFn: ({ approvedBy, ...data }: ApproveCorridorRequest & { approvedBy: string }) =>
       client
-        .post<DataResponse<ApprovedCorridor>>(`/merchants/${merchantId}/corridors`, {
+        .post<DataResponse<ApprovedCorridor>>(`/onboarding/api/v1/merchants/${merchantId}/corridors`, {
           body: data,
           headers: { 'X-Approved-By': approvedBy },
         })
@@ -248,7 +248,7 @@ export function useUploadDocument(merchantId: string) {
   return useMutation({
     mutationFn: (data: DocumentUploadRequest) =>
       client
-        .post<DataResponse<DocumentUploadResponse>>(`/merchants/${merchantId}/documents`, {
+        .post<DataResponse<DocumentUploadResponse>>(`/onboarding/api/v1/merchants/${merchantId}/documents`, {
           body: data,
         })
         .then((r) => r.data),
@@ -271,7 +271,7 @@ export function useUpdateRateLimitTier(merchantId: string) {
   return useMutation({
     mutationFn: (data: UpdateRateLimitTierRequest) =>
       client
-        .patch<DataResponse<Merchant>>(`/merchants/${merchantId}/rate-limit-tier`, {
+        .patch<DataResponse<Merchant>>(`/onboarding/api/v1/merchants/${merchantId}/rate-limit-tier`, {
           body: data,
         })
         .then((r) => r.data),
