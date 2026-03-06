@@ -44,6 +44,9 @@ importers:
       '@stablebridge/api-client':
         specifier: workspace:*
         version: link:../../packages/@stablebridge/api-client
+      '@stablebridge/auth':
+        specifier: workspace:*
+        version: link:../../packages/@stablebridge/auth
       '@stablebridge/types':
         specifier: workspace:*
         version: link:../../packages/@stablebridge/types
@@ -53,6 +56,9 @@ importers:
       '@stablebridge/utils':
         specifier: workspace:*
         version: link:../../packages/@stablebridge/utils
+      jose:
+        specifier: ^6.2.0
+        version: 6.2.0
       next:
         specifier: ^16.1.6
         version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -62,7 +68,16 @@ importers:
       react-dom:
         specifier: ^19.1.0
         version: 19.2.4(react@19.2.4)
+      react-hook-form:
+        specifier: ^7.71.2
+        version: 7.71.2(react@19.2.4)
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
+      '@hookform/resolvers':
+        specifier: ^5.2.2
+        version: 5.2.2(react-hook-form@7.71.2(react@19.2.4))
       '@stablebridge/testing':
         specifier: workspace:*
         version: link:../../packages/@stablebridge/testing
