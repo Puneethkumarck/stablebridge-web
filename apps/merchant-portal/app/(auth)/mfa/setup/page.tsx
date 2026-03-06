@@ -157,9 +157,9 @@ export default function MfaSetupPage() {
                   id="code"
                   inputMode="numeric"
                   maxLength={6}
-                  onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
                   placeholder="000000"
                   value={code}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
                 />
               </div>
 

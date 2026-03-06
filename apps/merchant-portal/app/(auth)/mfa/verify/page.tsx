@@ -109,16 +109,16 @@ export default function MfaVerifyPage() {
           <div className="flex justify-center gap-2" onPaste={handlePaste}>
             {digits.map((digit, i) => (
               <Input
-                ref={(el) => { inputRefs.current[i] = el; }}
                 aria-label={`Digit ${i + 1}`}
                 autoFocus={i === 0}
                 className="h-12 w-12 text-center text-lg font-mono"
                 inputMode="numeric"
                 key={i}
                 maxLength={1}
+                ref={(el) => { inputRefs.current[i] = el; }}
+                value={digit}
                 onChange={(e) => handleDigitChange(i, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(i, e)}
-                value={digit}
               />
             ))}
           </div>

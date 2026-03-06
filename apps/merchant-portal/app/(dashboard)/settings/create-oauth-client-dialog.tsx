@@ -88,7 +88,7 @@ export function CreateOAuthClientDialog({
 
   if (created) {
     return (
-      <Dialog onOpenChange={handleClose} open={open}>
+      <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>OAuth Client Created</DialogTitle>
@@ -111,9 +111,9 @@ export function CreateOAuthClientDialog({
                   {created.clientId}
                 </code>
                 <Button
-                  onClick={() => handleCopy(created.clientId, 'id')}
                   size="sm"
                   variant="outline"
+                  onClick={() => handleCopy(created.clientId, 'id')}
                 >
                   {copiedField === 'id' ? 'Copied!' : 'Copy'}
                 </Button>
@@ -127,9 +127,9 @@ export function CreateOAuthClientDialog({
                   {created.clientSecret}
                 </code>
                 <Button
-                  onClick={() => handleCopy(created.clientSecret, 'secret')}
                   size="sm"
                   variant="outline"
+                  onClick={() => handleCopy(created.clientSecret, 'secret')}
                 >
                   {copiedField === 'secret' ? 'Copied!' : 'Copy'}
                 </Button>
@@ -149,7 +149,7 @@ export function CreateOAuthClientDialog({
   }
 
   return (
-    <Dialog onOpenChange={handleClose} open={open}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create OAuth Client</DialogTitle>
@@ -178,7 +178,7 @@ export function CreateOAuthClientDialog({
           </div>
 
           <DialogFooter>
-            <Button onClick={() => handleClose(false)} type="button" variant="outline">
+            <Button type="button" variant="outline" onClick={() => handleClose(false)}>
               Cancel
             </Button>
             <Button disabled={isSubmitting} type="submit">

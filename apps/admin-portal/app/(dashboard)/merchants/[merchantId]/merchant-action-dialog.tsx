@@ -38,7 +38,7 @@ export function MerchantActionDialog({
   const [reason, setReason] = useState('');
 
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -49,20 +49,20 @@ export function MerchantActionDialog({
             <Label htmlFor="reason">Reason</Label>
             <Input
               id="reason"
-              onChange={(e) => setReason(e.target.value)}
               placeholder="Provide a reason..."
               value={reason}
+              onChange={(e) => setReason(e.target.value)}
             />
           </div>
         ) : null}
         <DialogFooter>
-          <Button disabled={isLoading} onClick={() => onOpenChange(false)} variant="outline">
+          <Button disabled={isLoading} variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button
             disabled={isLoading || (requiresReason && !reason.trim())}
-            onClick={() => onConfirm(reason || undefined)}
             variant={destructive ? 'destructive' : 'default'}
+            onClick={() => onConfirm(reason || undefined)}
           >
             {isLoading ? <Spinner size="sm" /> : null}
             Confirm

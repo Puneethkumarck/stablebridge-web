@@ -53,7 +53,7 @@ export function OAuthClientsTab() {
             Manage OAuth 2.0 clients for third-party integrations.
           </p>
         </div>
-        <Button onClick={() => setCreateOpen(true)} size="sm">
+        <Button size="sm" onClick={() => setCreateOpen(true)}>
           Create Client
         </Button>
       </div>
@@ -92,9 +92,9 @@ export function OAuthClientsTab() {
                 </TableCell>
                 <TableCell>
                   <Button
-                    onClick={() => setDetailClient(client)}
                     size="sm"
                     variant="ghost"
+                    onClick={() => setDetailClient(client)}
                   >
                     Details
                   </Button>
@@ -114,15 +114,15 @@ export function OAuthClientsTab() {
 
       <CreateOAuthClientDialog
         merchantId={merchantId}
-        onOpenChange={setCreateOpen}
         open={createOpen}
+        onOpenChange={setCreateOpen}
       />
 
       {detailClient ? (
         <OAuthClientDetailDialog
+          open
           client={detailClient}
           onOpenChange={(open) => { if (!open) setDetailClient(null); }}
-          open
         />
       ) : null}
     </>

@@ -279,8 +279,8 @@ export default function MerchantDetailPage({
           {availableActions.map((action) => (
             <Button
               key={action}
-              onClick={() => setActiveAction(action)}
               variant={ACTION_CONFIG[action].destructive ? 'destructive' : 'default'}
+              onClick={() => setActiveAction(action)}
             >
               {ACTION_CONFIG[action].title}
             </Button>
@@ -290,14 +290,14 @@ export default function MerchantDetailPage({
 
       {activeAction ? (
         <MerchantActionDialog
+          open
           description={ACTION_CONFIG[activeAction].description}
           destructive={ACTION_CONFIG[activeAction].destructive}
           isLoading={isMutating}
-          onConfirm={handleAction}
-          onOpenChange={(open) => { if (!open) setActiveAction(null); }}
-          open
           requiresReason={ACTION_CONFIG[activeAction].requiresReason}
           title={ACTION_CONFIG[activeAction].title}
+          onConfirm={handleAction}
+          onOpenChange={(open) => { if (!open) setActiveAction(null); }}
         />
       ) : null}
     </div>

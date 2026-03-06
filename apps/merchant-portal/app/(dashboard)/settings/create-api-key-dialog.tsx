@@ -74,7 +74,7 @@ export function CreateApiKeyDialog({ merchantId, open, onOpenChange }: CreateApi
   // Show the raw key after creation
   if (rawKey) {
     return (
-      <Dialog onOpenChange={handleClose} open={open}>
+      <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>API Key Created</DialogTitle>
@@ -94,7 +94,7 @@ export function CreateApiKeyDialog({ merchantId, open, onOpenChange }: CreateApi
               <code className="flex-1 overflow-x-auto rounded-md bg-zinc-900 px-4 py-3 font-mono text-sm text-green-400">
                 {rawKey}
               </code>
-              <Button onClick={handleCopy} size="sm" variant="outline">
+              <Button size="sm" variant="outline" onClick={handleCopy}>
                 {copied ? 'Copied!' : 'Copy'}
               </Button>
             </div>
@@ -113,7 +113,7 @@ export function CreateApiKeyDialog({ merchantId, open, onOpenChange }: CreateApi
   }
 
   return (
-    <Dialog onOpenChange={handleClose} open={open}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create API Key</DialogTitle>
@@ -142,7 +142,7 @@ export function CreateApiKeyDialog({ merchantId, open, onOpenChange }: CreateApi
           </div>
 
           <DialogFooter>
-            <Button onClick={() => handleClose(false)} type="button" variant="outline">
+            <Button type="button" variant="outline" onClick={() => handleClose(false)}>
               Cancel
             </Button>
             <Button disabled={isSubmitting} type="submit">

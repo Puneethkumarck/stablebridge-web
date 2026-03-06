@@ -96,7 +96,7 @@ export function CreateRoleDialog({ merchantId, open, onOpenChange }: CreateRoleD
   const groups = [...new Set(ALL_PERMISSIONS.map((p) => p.group))];
 
   return (
-    <Dialog onOpenChange={handleOpenChange} open={open}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create Custom Role</DialogTitle>
@@ -149,8 +149,8 @@ export function CreateRoleDialog({ merchantId, open, onOpenChange }: CreateRoleD
                       <input
                         checked={selectedPermissions.has(perm.value)}
                         className="h-4 w-4 rounded border-zinc-300 text-brand-600 focus:ring-brand-500"
-                        onChange={() => togglePermission(perm.value)}
                         type="checkbox"
+                        onChange={() => togglePermission(perm.value)}
                       />
                       <span className="text-sm text-zinc-700">{perm.label}</span>
                     </label>
@@ -161,7 +161,7 @@ export function CreateRoleDialog({ merchantId, open, onOpenChange }: CreateRoleD
           </div>
 
           <DialogFooter>
-            <Button onClick={() => handleOpenChange(false)} type="button" variant="outline">
+            <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>
             <Button disabled={isSubmitting || selectedPermissions.size === 0} type="submit">

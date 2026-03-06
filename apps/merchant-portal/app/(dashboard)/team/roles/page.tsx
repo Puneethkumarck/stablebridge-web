@@ -74,8 +74,8 @@ export default function RolesPage() {
               >
                 <button
                   className="flex w-full items-center justify-between px-6 py-4 text-left"
-                  onClick={() => setExpandedRole(isExpanded ? null : role.roleId)}
                   type="button"
+                  onClick={() => setExpandedRole(isExpanded ? null : role.roleId)}
                 >
                   <div className="flex items-center gap-3">
                     <span className="font-medium text-zinc-900">
@@ -144,8 +144,8 @@ export default function RolesPage() {
 
       <CreateRoleDialog
         merchantId={merchantId}
-        onOpenChange={setCreateOpen}
         open={createOpen}
+        onOpenChange={setCreateOpen}
       />
     </>
   );

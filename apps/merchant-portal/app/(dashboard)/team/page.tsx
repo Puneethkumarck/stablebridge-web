@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@stablebridge/auth';
-import { useMerchantUsers, useSuspendUser, useReactivateUser, useRoles } from '@stablebridge/api-client/hooks';
+import { useMerchantUsers, useSuspendUser, useReactivateUser } from '@stablebridge/api-client/hooks';
 import { PageHeader } from '@stablebridge/ui/layouts/page-header';
 import { Button } from '@stablebridge/ui/components/button';
 import { Badge } from '@stablebridge/ui/components/badge';
@@ -170,23 +170,24 @@ export default function TeamPage() {
 
       <InviteUserDialog
         merchantId={merchantId}
-        onOpenChange={setInviteOpen}
         open={inviteOpen}
+        onOpenChange={setInviteOpen}
       />
 
       {roleDialogUser ? (
         <ChangeRoleDialog
+          open
           currentRoleId={roleDialogUser.roleId}
           merchantId={merchantId}
-          onOpenChange={(open) => { if (!open) setRoleDialogUser(null); }}
-          open
           userId={roleDialogUser.id}
           userName={roleDialogUser.name}
+          onOpenChange={(open) => { if (!open) setRoleDialogUser(null); }}
         />
       ) : null}
 
       {confirmAction ? (
         <ConfirmDialog
+          open
           description={
             confirmAction.action === 'suspend'
               ? `Are you sure you want to suspend ${confirmAction.name}? They will lose access immediately.`
@@ -194,10 +195,9 @@ export default function TeamPage() {
           }
           destructive={confirmAction.action === 'suspend'}
           isLoading={suspendUser.isPending || reactivateUser.isPending}
+          title={confirmAction.action === 'suspend' ? 'Suspend User' : 'Reactivate User'}
           onConfirm={handleConfirmAction}
           onOpenChange={(open) => { if (!open) setConfirmAction(null); }}
-          open
-          title={confirmAction.action === 'suspend' ? 'Suspend User' : 'Reactivate User'}
         />
       ) : null}
     </>

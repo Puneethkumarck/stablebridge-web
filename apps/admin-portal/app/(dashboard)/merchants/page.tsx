@@ -67,11 +67,11 @@ export default function MerchantsPage() {
 
       <div className="mt-6 flex items-center gap-4">
         <Select
+          value={statusFilter}
           onValueChange={(v) => {
             setStatusFilter(v as MerchantStatus | 'ALL');
             setPage(0);
           }}
-          value={statusFilter}
         >
           <SelectTrigger className="w-48">
             <SelectValue />
@@ -138,17 +138,17 @@ export default function MerchantsPage() {
                 <div className="flex gap-2">
                   <Button
                     disabled={data.page.number === 0}
-                    onClick={() => setPage((p) => p - 1)}
                     size="sm"
                     variant="outline"
+                    onClick={() => setPage((p) => p - 1)}
                   >
                     Previous
                   </Button>
                   <Button
                     disabled={data.page.number + 1 >= data.page.totalPages}
-                    onClick={() => setPage((p) => p + 1)}
                     size="sm"
                     variant="outline"
+                    onClick={() => setPage((p) => p + 1)}
                   >
                     Next
                   </Button>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useChangeUserRole, useRoles, type RoleResponse } from '@stablebridge/api-client/hooks';
+import { useChangeUserRole, useRoles } from '@stablebridge/api-client/hooks';
 import { Button } from '@stablebridge/ui/components/button';
 import { Label } from '@stablebridge/ui/components/label';
 import {
@@ -59,7 +59,7 @@ export function ChangeRoleDialog({
   }
 
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Change Role</DialogTitle>
@@ -76,7 +76,7 @@ export function ChangeRoleDialog({
 
         <div className="space-y-2">
           <Label>New Role</Label>
-          <Select onValueChange={setSelectedRoleId} value={selectedRoleId}>
+          <Select value={selectedRoleId} onValueChange={setSelectedRoleId}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -91,7 +91,7 @@ export function ChangeRoleDialog({
         </div>
 
         <DialogFooter>
-          <Button onClick={() => onOpenChange(false)} type="button" variant="outline">
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button disabled={changeRole.isPending} onClick={handleSubmit}>

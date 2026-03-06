@@ -5,22 +5,22 @@ export default function Home() {
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">
       <PageHeader
-        title="StableBridge"
-        description="Cross-border B2B payments powered by stablecoins"
         actions={<Button>Get Started</Button>}
+        description="Cross-border B2B payments powered by stablecoins"
+        title="StableBridge"
       />
       <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <FeatureCard
-          title="Fast Settlement"
           description="Send payments globally with near-instant settlement via blockchain rails."
+          title="Fast Settlement"
         />
         <FeatureCard
-          title="Transparent FX"
           description="Real-time exchange rates with no hidden fees or markups."
+          title="Transparent FX"
         />
         <FeatureCard
-          title="Compliance Built-in"
           description="Automated KYB, AML screening, and regulatory compliance."
+          title="Compliance Built-in"
         />
       </div>
     </main>

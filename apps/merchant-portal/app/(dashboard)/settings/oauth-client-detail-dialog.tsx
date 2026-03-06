@@ -33,7 +33,7 @@ export function OAuthClientDetailDialog({
   onOpenChange,
 }: OAuthClientDetailDialogProps) {
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{client.name}</DialogTitle>

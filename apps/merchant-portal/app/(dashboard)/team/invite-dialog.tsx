@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useInviteUser, useRoles, type RoleResponse } from '@stablebridge/api-client/hooks';
+import { useInviteUser, useRoles } from '@stablebridge/api-client/hooks';
 import { Button } from '@stablebridge/ui/components/button';
 import { Input } from '@stablebridge/ui/components/input';
 import { Label } from '@stablebridge/ui/components/label';
@@ -73,7 +73,7 @@ export function InviteUserDialog({ merchantId, open, onOpenChange }: InviteUserD
   }
 
   return (
-    <Dialog onOpenChange={handleOpenChange} open={open}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Invite Team Member</DialogTitle>
@@ -136,7 +136,7 @@ export function InviteUserDialog({ merchantId, open, onOpenChange }: InviteUserD
           </div>
 
           <DialogFooter>
-            <Button onClick={() => handleOpenChange(false)} type="button" variant="outline">
+            <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>
             <Button disabled={isSubmitting} type="submit">
