@@ -43,6 +43,7 @@ export const mockMerchantUser: MerchantUser = {
     'settings:write',
   ],
   active: true,
+  lastLoginAt: '2025-06-01T09:30:00Z',
   createdAt: '2025-01-15T10:00:00Z',
   updatedAt: '2025-01-15T10:00:00Z',
 };

@@ -19,6 +19,7 @@ export interface MerchantUser {
   readonly role: Role;
   readonly permissions: readonly Permission[];
   readonly active: boolean;
+  readonly lastLoginAt: string | undefined;
   readonly createdAt: string;
   readonly updatedAt: string;
 }
