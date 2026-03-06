@@ -10,6 +10,77 @@ servers:
   description: Generated server url
 paths:
   /api/v1/merchants:
+    get:
+      tags:
+      - merchant-controller
+      summary: List merchants with pagination and optional status filter
+      operationId: listMerchants
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - APPLIED
+          - KYB_IN_PROGRESS
+          - KYB_MANUAL_REVIEW
+          - KYB_REJECTED
+          - PENDING_APPROVAL
+          - ACTIVE
+          - SUSPENDED
+          - CLOSED
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageResponseMerchantResponse'
     post:
       tags:
       - merchant-controller
@@ -21,14 +92,14 @@ paths:
               $ref: '#/components/schemas/MerchantApplicationRequest'
         required: true
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -76,14 +147,14 @@ paths:
               $ref: '#/components/schemas/SuspendMerchantRequest'
         required: true
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -121,14 +192,14 @@ paths:
           type: string
           format: uuid
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -166,14 +237,14 @@ paths:
           type: string
           format: uuid
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -217,14 +288,14 @@ paths:
               $ref: '#/components/schemas/DocumentUploadRequest'
         required: true
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -278,14 +349,14 @@ paths:
               $ref: '#/components/schemas/ApproveCorridorRequest'
         required: true
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -332,14 +403,14 @@ paths:
             schema:
               $ref: '#/components/schemas/CloseMerchantRequest'
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -383,14 +454,14 @@ paths:
               $ref: '#/components/schemas/ActivateMerchantRequest'
         required: true
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -437,14 +508,14 @@ paths:
               type: string
         required: true
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -482,14 +553,14 @@ paths:
           type: string
           format: uuid
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -536,14 +607,14 @@ paths:
               $ref: '#/components/schemas/UpdateMerchantRequest'
         required: true
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -591,14 +662,14 @@ paths:
               $ref: '#/components/schemas/UpdateRateLimitTierRequest'
         required: true
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -640,14 +711,14 @@ paths:
           type: string
           format: uuid
       responses:
-        '404':
-          description: Not Found
+        '400':
+          description: Bad Request
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ApiError'
-        '400':
-          description: Bad Request
+        '404':
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -968,6 +1039,30 @@ components:
           format: uuid
       required:
       - updatedBy
+    Page:
+      type: object
+      properties:
+        number:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    PageResponseMerchantResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MerchantResponse'
+        page:
+          $ref: '#/components/schemas/Page'
     KybStatusResponse:
       type: object
       properties:

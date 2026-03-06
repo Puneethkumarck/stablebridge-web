@@ -6,7 +6,6 @@ import type { MerchantStatus } from '@stablebridge/types';
 import { useMerchants } from '@stablebridge/api-client/hooks';
 import { Badge } from '@stablebridge/ui/components/badge';
 import { Button } from '@stablebridge/ui/components/button';
-import { Input } from '@stablebridge/ui/components/input';
 import {
   Select,
   SelectContent,
@@ -52,12 +51,10 @@ function formatStatus(status: MerchantStatus): string {
 }
 
 export default function MerchantsPage() {
-  const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<MerchantStatus | 'ALL'>('ALL');
   const [page, setPage] = useState(0);
 
   const { data, isLoading } = useMerchants({
-    ...(search ? { search } : {}),
     ...(statusFilter !== 'ALL' ? { status: statusFilter } : {}),
     page,
     size: 20,
@@ -69,15 +66,6 @@ export default function MerchantsPage() {
       <p className="mt-1 text-sm text-zinc-500">Review and manage merchant accounts</p>
 
       <div className="mt-6 flex items-center gap-4">
-        <Input
-          className="max-w-sm"
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setPage(0);
-          }}
-          placeholder="Search merchants..."
-          value={search}
-        />
         <Select
           onValueChange={(v) => {
             setStatusFilter(v as MerchantStatus | 'ALL');
@@ -142,14 +130,14 @@ export default function MerchantsPage() {
                 ))}
               </TableBody>
             </Table>
-            {data && data.meta.totalPages > 1 ? (
+            {data && data.page.totalPages > 1 ? (
               <div className="flex items-center justify-between border-t border-zinc-200 px-4 py-3">
                 <p className="text-sm text-zinc-500">
-                  Page {data.meta.page + 1} of {data.meta.totalPages} ({data.meta.totalElements} total)
+                  Page {data.page.number + 1} of {data.page.totalPages} ({data.page.totalElements} total)
                 </p>
                 <div className="flex gap-2">
                   <Button
-                    disabled={!data.meta.hasPrevious}
+                    disabled={data.page.number === 0}
                     onClick={() => setPage((p) => p - 1)}
                     size="sm"
                     variant="outline"
@@ -157,7 +145,7 @@ export default function MerchantsPage() {
                     Previous
                   </Button>
                   <Button
-                    disabled={!data.meta.hasNext}
+                    disabled={data.page.number + 1 >= data.page.totalPages}
                     onClick={() => setPage((p) => p + 1)}
                     size="sm"
                     variant="outline"

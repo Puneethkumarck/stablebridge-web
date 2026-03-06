@@ -5,7 +5,6 @@ import type {
   KybVerification,
   Merchant,
   MerchantStatus,
-  MerchantSummary,
   PageResponse,
 } from '@stablebridge/types';
 import { useApiClient } from '../provider';
@@ -17,8 +16,6 @@ import { merchantKeys } from '../keys/merchants';
 
 interface ListMerchantsParams {
   status?: MerchantStatus;
-  search?: string;
-  countryCode?: string;
   page?: number;
   size?: number;
 }
@@ -29,7 +26,7 @@ export function useMerchants(params?: ListMerchantsParams) {
   return useQuery({
     queryKey: merchantKeys.list(params),
     queryFn: ({ signal }) =>
-      client.get<PageResponse<MerchantSummary>>('/merchants', {
+      client.get<PageResponse<Merchant>>('/merchants', {
         ...(params ? { params: params as Record<string, string | number | boolean | undefined> } : {}),
         signal,
       }),

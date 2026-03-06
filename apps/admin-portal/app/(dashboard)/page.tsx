@@ -39,7 +39,7 @@ function StatCard({
     <div className="rounded-lg border border-zinc-200 p-6 shadow-sm">
       <p className="text-sm font-medium text-zinc-500">{label}</p>
       <p className="mt-2 text-3xl font-bold text-zinc-950">
-        {isLoading ? <Spinner size="sm" /> : (data?.meta.totalElements ?? '—')}
+        {isLoading ? <Spinner size="sm" /> : (data?.page.totalElements ?? '—')}
       </p>
     </div>
   );
