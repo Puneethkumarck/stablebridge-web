@@ -1,0 +1,423 @@
+openapi: 3.1.0
+info:
+  title: StableBridge Merchant Onboarding Service (S11)
+  description: Merchant onboarding, KYB verification, and lifecycle management
+  version: 1.0.0
+  contact:
+    name: StableBridge Engineering
+
+servers:
+  - url: /api
+    description: Next.js API proxy
+
+tags:
+  - name: Merchants
+    description: Merchant management and onboarding
+
+paths:
+  /merchants:
+    get:
+      operationId: listMerchants
+      tags: [Merchants]
+      summary: List all merchants (admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
+        - name: status
+          in: query
+          schema:
+            $ref: "#/components/schemas/MerchantStatus"
+        - name: search
+          in: query
+          description: Search by legal name, trading name, or registration number
+          schema:
+            type: string
+        - name: countryCode
+          in: query
+          schema:
+            type: string
+            pattern: "^[A-Z]{2}$"
+      responses:
+        "200":
+          description: Paginated merchant list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponse_MerchantSummary"
+
+  /merchants/{merchantId}:
+    get:
+      operationId: getMerchant
+      tags: [Merchants]
+      summary: Get merchant details
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/MerchantId"
+      responses:
+        "200":
+          description: Merchant details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponse_Merchant"
+        "404":
+          description: Merchant not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+    patch:
+      operationId: updateMerchant
+      tags: [Merchants]
+      summary: Update merchant details
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/MerchantId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMerchantRequest"
+      responses:
+        "200":
+          description: Merchant updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponse_Merchant"
+
+  /merchants/{merchantId}/activate:
+    post:
+      operationId: activateMerchant
+      tags: [Merchants]
+      summary: Activate a KYB-approved merchant (admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/MerchantId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Merchant activated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponse_Merchant"
+
+  /merchants/{merchantId}/suspend:
+    post:
+      operationId: suspendMerchant
+      tags: [Merchants]
+      summary: Suspend a merchant (admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/MerchantId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SuspendMerchantRequest"
+      responses:
+        "200":
+          description: Merchant suspended
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponse_Merchant"
+
+  /merchants/{merchantId}/reactivate:
+    post:
+      operationId: reactivateMerchant
+      tags: [Merchants]
+      summary: Reactivate a suspended merchant (admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/MerchantId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Merchant reactivated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponse_Merchant"
+
+  /merchants/{merchantId}/close:
+    post:
+      operationId: closeMerchant
+      tags: [Merchants]
+      summary: Permanently close a merchant account (admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/MerchantId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CloseMerchantRequest"
+      responses:
+        "200":
+          description: Merchant closed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponse_Merchant"
+
+  /merchants/{merchantId}/kyb-status:
+    get:
+      operationId: getMerchantKybStatus
+      tags: [Merchants]
+      summary: Get KYB verification status timeline
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/MerchantId"
+      responses:
+        "200":
+          description: KYB status timeline
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataResponse_KybStatus"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    MerchantId:
+      name: merchantId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+
+    Size:
+      name: size
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+  schemas:
+    MerchantStatus:
+      type: string
+      enum:
+        - DRAFT
+        - PENDING_REVIEW
+        - KYB_IN_PROGRESS
+        - KYB_APPROVED
+        - KYB_REJECTED
+        - ACTIVATED
+        - SUSPENDED
+        - DEACTIVATED
+
+    ApiError:
+      type: object
+      required: [code, message, timestamp]
+      properties:
+        code:
+          type: string
+          example: "MO-0003"
+        message:
+          type: string
+          example: "Merchant not found"
+        details:
+          type: array
+          items:
+            type: string
+        timestamp:
+          type: string
+          format: date-time
+        traceId:
+          type: string
+
+    PageMeta:
+      type: object
+      required: [page, size, totalElements, totalPages, hasNext, hasPrevious]
+      properties:
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        hasNext:
+          type: boolean
+        hasPrevious:
+          type: boolean
+
+    Merchant:
+      type: object
+      required:
+        - id
+        - legalName
+        - tradingName
+        - registrationNumber
+        - countryCode
+        - status
+        - primaryContactEmail
+        - primaryContactName
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        legalName:
+          type: string
+        tradingName:
+          type: string
+        registrationNumber:
+          type: string
+        countryCode:
+          type: string
+          pattern: "^[A-Z]{2}$"
+        status:
+          $ref: "#/components/schemas/MerchantStatus"
+        primaryContactEmail:
+          type: string
+          format: email
+        primaryContactName:
+          type: string
+        website:
+          type: string
+          format: uri
+        incorporationDate:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    MerchantSummary:
+      type: object
+      required: [id, legalName, tradingName, countryCode, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        legalName:
+          type: string
+        tradingName:
+          type: string
+        countryCode:
+          type: string
+        status:
+          $ref: "#/components/schemas/MerchantStatus"
+
+    UpdateMerchantRequest:
+      type: object
+      properties:
+        tradingName:
+          type: string
+        primaryContactEmail:
+          type: string
+          format: email
+        primaryContactName:
+          type: string
+        website:
+          type: string
+          format: uri
+
+    SuspendMerchantRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+
+    CloseMerchantRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+
+    KybEvent:
+      type: object
+      required: [status, timestamp]
+      properties:
+        status:
+          $ref: "#/components/schemas/MerchantStatus"
+        timestamp:
+          type: string
+          format: date-time
+        note:
+          type: string
+        performedBy:
+          type: string
+
+    KybStatus:
+      type: object
+      required: [currentStatus, timeline]
+      properties:
+        currentStatus:
+          $ref: "#/components/schemas/MerchantStatus"
+        timeline:
+          type: array
+          items:
+            $ref: "#/components/schemas/KybEvent"
+
+    # DataResponse / PageResponse wrappers
+    DataResponse_Merchant:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: "#/components/schemas/Merchant"
+
+    DataResponse_KybStatus:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: "#/components/schemas/KybStatus"
+
+    PageResponse_MerchantSummary:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/MerchantSummary"
+        meta:
+          $ref: "#/components/schemas/PageMeta"

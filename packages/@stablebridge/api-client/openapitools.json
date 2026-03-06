@@ -1,0 +1,31 @@
+{
+  "$schema": "node_modules/@openapitools/openapi-generator-cli/config.schema.json",
+  "spaces": 2,
+  "generator-cli": {
+    "version": "7.12.0",
+    "generators": {
+      "iam": {
+        "generatorName": "typescript-fetch",
+        "inputSpec": "openapi/iam.yaml",
+        "output": "src/generated/iam",
+        "additionalProperties": {
+          "supportsES6": true,
+          "typescriptThreePlus": true,
+          "withInterfaces": true,
+          "enumPropertyNaming": "UPPERCASE"
+        }
+      },
+      "merchant-onboarding": {
+        "generatorName": "typescript-fetch",
+        "inputSpec": "openapi/merchant-onboarding.yaml",
+        "output": "src/generated/merchant-onboarding",
+        "additionalProperties": {
+          "supportsES6": true,
+          "typescriptThreePlus": true,
+          "withInterfaces": true,
+          "enumPropertyNaming": "UPPERCASE"
+        }
+      }
+    }
+  }
+}
