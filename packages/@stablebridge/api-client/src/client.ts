@@ -62,14 +62,19 @@ export function createApiClient(config: ApiClientConfig) {
       signal?: AbortSignal;
     },
   ): Promise<T> {
-    const url = new URL(path, config.baseUrl);
+    const base = config.baseUrl.replace(/\/$/, '');
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    let urlStr = `${base}${cleanPath}`;
 
     if (options?.params) {
+      const searchParams = new URLSearchParams();
       for (const [key, value] of Object.entries(options.params)) {
         if (value !== undefined) {
-          url.searchParams.set(key, String(value));
+          searchParams.set(key, String(value));
         }
       }
+      const qs = searchParams.toString();
+      if (qs) urlStr += `?${qs}`;
     }
 
     const headers: Record<string, string> = {
@@ -101,7 +106,7 @@ export function createApiClient(config: ApiClientConfig) {
       fetchInit.signal = options.signal;
     }
 
-    const response = await fetch(url.toString(), fetchInit);
+    const response = await fetch(urlStr, fetchInit);
 
     if (response.status === 204) {
       return undefined as T;

@@ -44,7 +44,8 @@ const PERMISSION_GROUPS: { label: string; permissions: { value: Permission; labe
 export default function RolesPage() {
   const { user } = useAuth();
   const merchantId = user?.merchantId ?? '';
-  const { data: roles, isLoading } = useRoles(merchantId);
+  const { data: rolesResponse, isLoading } = useRoles(merchantId);
+  const roles = rolesResponse?.data ?? [];
   const [createOpen, setCreateOpen] = useState(false);
   const [expandedRole, setExpandedRole] = useState<string | null>(null);
 
@@ -64,23 +65,23 @@ export default function RolesPage() {
             <Spinner size="lg" />
           </div>
         ) : (
-          roles?.map((role) => {
-            const isExpanded = expandedRole === role.name;
+          roles.map((role) => {
+            const isExpanded = expandedRole === role.roleId;
             return (
               <div
                 className="rounded-lg border border-zinc-200 bg-white"
-                key={role.name}
+                key={role.roleId}
               >
                 <button
                   className="flex w-full items-center justify-between px-6 py-4 text-left"
-                  onClick={() => setExpandedRole(isExpanded ? null : role.name)}
                   type="button"
+                  onClick={() => setExpandedRole(isExpanded ? null : role.roleId)}
                 >
                   <div className="flex items-center gap-3">
                     <span className="font-medium text-zinc-900">
-                      {role.label ?? role.name}
+                      {role.roleName}
                     </span>
-                    {role.builtIn ? (
+                    {role.builtin ? (
                       <Badge variant="default">Built-in</Badge>
                     ) : (
                       <Badge variant="brand">Custom</Badge>
@@ -143,8 +144,8 @@ export default function RolesPage() {
 
       <CreateRoleDialog
         merchantId={merchantId}
-        onOpenChange={setCreateOpen}
         open={createOpen}
+        onOpenChange={setCreateOpen}
       />
     </>
   );

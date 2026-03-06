@@ -1,1073 +1,1802 @@
 openapi: 3.1.0
 info:
-  title: StableBridge IAM Service (S13)
-  description: Merchant Identity & Access Management — authentication, user management, roles, API keys, OAuth clients
-  version: 1.0.0
+  title: S13 Merchant IAM API
+  description: "User authentication, roles, permissions, and team management"
   contact:
-    name: StableBridge Engineering
-
+    name: StableBridge Platform
+  version: 1.0.0
 servers:
-  - url: /api
-    description: Next.js API proxy
-
-tags:
-  - name: Auth
-    description: Authentication endpoints
-  - name: Users
-    description: Merchant user management
-  - name: Roles
-    description: Role and permission management
-  - name: API Keys
-    description: API key management
-  - name: OAuth Clients
-    description: OAuth client management
-  - name: MFA
-    description: Multi-factor authentication
-
+- url: http://localhost/iam
+  description: NGINX Ingress (Kind cluster)
 paths:
-  /auth/login:
+  /v1/merchants/{merchantId}/users/{userId}/suspend:
     post:
-      operationId: login
-      tags: [Auth]
-      summary: Authenticate with email and password
-      requestBody:
+      tags:
+      - users-controller
+      operationId: suspendUser
+      parameters:
+      - name: merchantId
+        in: path
         required: true
+        schema:
+          type: string
+          format: uuid
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginRequest"
-      responses:
-        "200":
-          description: Login successful
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_LoginResponse"
-        "401":
-          description: Invalid credentials
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-
-  /auth/refresh:
-    post:
-      operationId: refreshToken
-      tags: [Auth]
-      summary: Refresh access token using refresh token cookie
-      responses:
-        "200":
-          description: Token refreshed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_LoginResponse"
-        "401":
-          description: Invalid or expired refresh token
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-
-  /auth/logout:
-    post:
-      operationId: logout
-      tags: [Auth]
-      summary: Invalidate session and clear cookies
-      responses:
-        "204":
-          description: Logout successful
-
-  /auth/forgot-password:
-    post:
-      operationId: forgotPassword
-      tags: [Auth]
-      summary: Request password reset email
-      requestBody:
+              $ref: "#/components/schemas/SuspendUserRequest"
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ForgotPasswordRequest"
       responses:
-        "202":
-          description: Reset email sent if account exists
-
-  /auth/reset-password:
-    post:
-      operationId: resetPassword
-      tags: [Auth]
-      summary: Reset password using token from email
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ResetPasswordRequest"
-      responses:
-        "200":
-          description: Password reset successful
         "400":
-          description: Invalid or expired token
+          description: Bad Request
           content:
-            application/json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/ApiError"
-
-  /auth/me:
-    get:
-      operationId: getCurrentUser
-      tags: [Auth]
-      summary: Get current authenticated user
-      security:
-        - bearerAuth: []
-      responses:
-        "200":
-          description: Current user details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_AuthUser"
         "401":
-          description: Not authenticated
+          description: Unauthorized
           content:
-            application/json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/ApiError"
-
-  /mfa/setup:
-    post:
-      operationId: setupMfa
-      tags: [MFA]
-      summary: Initialize MFA setup — returns TOTP secret and QR code
-      security:
-        - bearerAuth: []
-      responses:
-        "200":
-          description: MFA setup initiated
+        "422":
+          description: Unprocessable Content
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/DataResponse_MfaSetupResponse"
-
-  /mfa/verify:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DataResponseSuspendUserResponse"
+  /v1/merchants/{merchantId}/users/{userId}/reactivate:
     post:
-      operationId: verifyMfa
-      tags: [MFA]
-      summary: Verify TOTP code during login or setup
-      security:
-        - bearerAuth: []
-      requestBody:
+      tags:
+      - users-controller
+      operationId: reactivateUser
+      parameters:
+      - name: merchantId
+        in: path
         required: true
+        schema:
+          type: string
+          format: uuid
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DataResponseReactivateUserResponse"
+  /v1/merchants/{merchantId}/users/{userId}/mfa/setup:
+    post:
+      tags:
+      - auth-controller
+      operationId: setupMfa
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DataResponseMfaSetupResponse"
+  /v1/merchants/{merchantId}/users/{userId}/mfa/activate:
+    post:
+      tags:
+      - auth-controller
+      operationId: activateMfa
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/MfaVerifyRequest"
+              $ref: "#/components/schemas/MfaActivateRequest"
+        required: true
       responses:
-        "200":
-          description: MFA verified
+        "400":
+          description: Bad Request
           content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_LoginResponse"
-        "401":
-          description: Invalid TOTP code
-          content:
-            application/json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/ApiError"
-
-  /merchants/{merchantId}/users:
-    get:
-      operationId: listMerchantUsers
-      tags: [Users]
-      summary: List users for a merchant
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/Page"
-        - $ref: "#/components/parameters/Size"
-        - name: role
-          in: query
-          schema:
-            $ref: "#/components/schemas/Role"
-        - name: active
-          in: query
-          schema:
-            type: boolean
-      responses:
-        "200":
-          description: Paginated user list
+        "401":
+          description: Unauthorized
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/PageResponse_MerchantUser"
-
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "204":
+          description: No Content
+  /v1/merchants/{merchantId}/users/invite:
     post:
+      tags:
+      - users-controller
       operationId: inviteUser
-      tags: [Users]
-      summary: Invite a new user to the merchant
-      security:
-        - bearerAuth: []
       parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/IdempotencyKey"
-      requestBody:
+      - name: merchantId
+        in: path
         required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/InviteUserRequest"
+        required: true
       responses:
-        "201":
-          description: Invitation sent
+        "400":
+          description: Bad Request
           content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_MerchantUser"
-        "409":
-          description: User already exists
-          content:
-            application/json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/ApiError"
-
-  /merchants/{merchantId}/users/{userId}:
-    get:
-      operationId: getMerchantUser
-      tags: [Users]
-      summary: Get a specific merchant user
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/UserId"
-      responses:
-        "200":
-          description: User details
+        "401":
+          description: Unauthorized
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/DataResponse_MerchantUser"
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
         "404":
-          description: User not found
+          description: Not Found
           content:
-            application/json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/ApiError"
-
-    patch:
-      operationId: updateMerchantUser
-      tags: [Users]
-      summary: Update user role or status
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/UserId"
-        - $ref: "#/components/parameters/IdempotencyKey"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateUserRequest"
-      responses:
-        "200":
-          description: User updated
+        "409":
+          description: Conflict
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/DataResponse_MerchantUser"
-
-  /merchants/{merchantId}/users/{userId}/suspend:
-    post:
-      operationId: suspendUser
-      tags: [Users]
-      summary: Suspend a merchant user
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/UserId"
-        - $ref: "#/components/parameters/IdempotencyKey"
-      responses:
-        "200":
-          description: User suspended
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/DataResponse_MerchantUser"
-
-  /merchants/{merchantId}/users/{userId}/reactivate:
-    post:
-      operationId: reactivateUser
-      tags: [Users]
-      summary: Reactivate a suspended merchant user
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/UserId"
-        - $ref: "#/components/parameters/IdempotencyKey"
-      responses:
-        "200":
-          description: User reactivated
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/DataResponse_MerchantUser"
-
-  /merchants/{merchantId}/roles:
+                $ref: "#/components/schemas/ApiError"
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DataResponseInvitationResponse"
+  /v1/merchants/{merchantId}/roles:
     get:
+      tags:
+      - roles-controller
       operationId: listRoles
-      tags: [Roles]
-      summary: List roles for a merchant
-      security:
-        - bearerAuth: []
       parameters:
-        - $ref: "#/components/parameters/MerchantId"
-      responses:
-        "200":
-          description: Role list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_RoleDetailList"
-
-    post:
-      operationId: createRole
-      tags: [Roles]
-      summary: Create a custom role
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/IdempotencyKey"
-      requestBody:
+      - name: merchantId
+        in: path
         required: true
+        schema:
+          type: string
+          format: uuid
+      - name: includeInactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseRoleResponse"
+    post:
+      tags:
+      - roles-controller
+      operationId: createRole
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/CreateRoleRequest"
-      responses:
-        "201":
-          description: Role created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_RoleDetail"
-
-  /merchants/{merchantId}/api-keys:
-    get:
-      operationId: listApiKeys
-      tags: [API Keys]
-      summary: List API keys for a merchant
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-      responses:
-        "200":
-          description: API key list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_ApiKeyList"
-
-    post:
-      operationId: createApiKey
-      tags: [API Keys]
-      summary: Create a new API key — raw key returned only once
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/IdempotencyKey"
-      requestBody:
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateApiKeyRequest"
       responses:
-        "201":
-          description: API key created (raw key in response)
+        "400":
+          description: Bad Request
           content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_ApiKeyCreated"
-
-  /merchants/{merchantId}/api-keys/{keyId}/revoke:
-    post:
-      operationId: revokeApiKey
-      tags: [API Keys]
-      summary: Revoke an API key
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - name: keyId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - $ref: "#/components/parameters/IdempotencyKey"
-      responses:
-        "200":
-          description: API key revoked
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_ApiKey"
-
-  /merchants/{merchantId}/oauth-clients:
-    get:
-      operationId: listOAuthClients
-      tags: [OAuth Clients]
-      summary: List OAuth clients for a merchant
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-      responses:
-        "200":
-          description: OAuth client list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_OAuthClientList"
-
-    post:
-      operationId: createOAuthClient
-      tags: [OAuth Clients]
-      summary: Create a new OAuth client — secret returned only once
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/IdempotencyKey"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateOAuthClientRequest"
-      responses:
-        "201":
-          description: OAuth client created (secret in response)
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_OAuthClientCreated"
-
-  /invitations/{token}:
-    get:
-      operationId: getInvitation
-      tags: [Users]
-      summary: Get invitation details by token
-      parameters:
-        - name: token
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Invitation details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_Invitation"
-        "404":
-          description: Invalid or expired token
-          content:
-            application/json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/ApiError"
-
-  /invitations/{token}/accept:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DataResponseRoleResponse"
+  /v1/merchants/{merchantId}/auth/mfa/verify:
     post:
-      operationId: acceptInvitation
-      tags: [Users]
-      summary: Accept invitation and set password
+      tags:
+      - auth-controller
+      operationId: verifyMfa
       parameters:
-        - name: token
-          in: path
-          required: true
-          schema:
-            type: string
-        - $ref: "#/components/parameters/IdempotencyKey"
-      requestBody:
+      - name: merchantId
+        in: path
         required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MfaVerifyRequest"
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DataResponseLoginResponse"
+  /v1/merchants/{merchantId}/auth/login:
+    post:
+      tags:
+      - auth-controller
+      operationId: login
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DataResponseObject"
+  /v1/invitations/{token}/accept:
+    post:
+      tags:
+      - auth-controller
+      operationId: acceptInvitation
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/AcceptInvitationRequest"
+        required: true
       responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
         "200":
-          description: Invitation accepted, user activated
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DataResponseUserResponse"
+  /v1/auth/refresh:
+    post:
+      tags:
+      - auth-controller
+      operationId: refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshTokenRequest"
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DataResponseRefreshTokenResponse"
+  /v1/auth/logout:
+    post:
+      tags:
+      - auth-controller
+      operationId: logout
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "204":
+          description: No Content
+  /v1/merchants/{merchantId}/users/{userId}/role:
+    patch:
+      tags:
+      - users-controller
+      operationId: changeRole
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangeUserRoleRequest"
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DataResponseChangeRoleResponse"
+  /v1/merchants/{merchantId}/roles/{roleId}:
+    delete:
+      tags:
+      - roles-controller
+      operationId: deleteRole
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: roleId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "204":
+          description: No Content
+    patch:
+      tags:
+      - roles-controller
+      operationId: updateRole
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: roleId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRoleRequest"
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DataResponseRoleResponse"
+  /v1/merchants/{merchantId}/users:
+    get:
+      tags:
+      - users-controller
+      operationId: listUsers
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - INVITED
+          - ACTIVE
+          - SUSPENDED
+          - DEACTIVATED
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseUserResponse"
+  /v1/auth/permissions/check:
+    get:
+      tags:
+      - permissions-controller
+      operationId: checkPermission
+      parameters:
+      - name: user_id
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: merchant_id
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: permission
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DataResponsePermissionCheckResponse"
+  /v1/.well-known/jwks.json:
+    get:
+      tags:
+      - auth-controller
+      operationId: jwks
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DataResponse_LoginResponse"
-
+                type: string
+  /v1/merchants/{merchantId}/users/{userId}:
+    delete:
+      tags:
+      - users-controller
+      operationId: deactivateUser
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeactivateUserRequest"
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "410":
+          description: Gone
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "204":
+          description: No Content
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
-  parameters:
-    MerchantId:
-      name: merchantId
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-
-    UserId:
-      name: userId
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-
-    IdempotencyKey:
-      name: Idempotency-Key
-      in: header
-      required: true
-      schema:
-        type: string
-        format: uuid
-
-    Page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-
-    Size:
-      name: size
-      in: query
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
-
   schemas:
-    Role:
-      type: string
-      enum: [OWNER, ADMIN, OPERATOR, VIEWER]
-
-    Permission:
-      type: string
-      enum:
-        - "payments:read"
-        - "payments:write"
-        - "merchants:read"
-        - "merchants:write"
-        - "users:read"
-        - "users:write"
-        - "settings:read"
-        - "settings:write"
-
     ApiError:
       type: object
-      required: [code, message, timestamp]
       properties:
         code:
           type: string
-          example: "IAM-0010"
+        status:
+          type: string
         message:
           type: string
-          example: "Invalid credentials"
-        details:
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    SuspendUserRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          minLength: 1
+    DataResponseSuspendUserResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/SuspendUserResponse"
+    SuspendUserResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        status:
+          type: string
+        suspendedAt:
+          type: string
+          format: date-time
+    DataResponseReactivateUserResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/ReactivateUserResponse"
+    ReactivateUserResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        status:
+          type: string
+        activatedAt:
+          type: string
+          format: date-time
+    DataResponseMfaSetupResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/MfaSetupResponse"
+    MfaSetupResponse:
+      type: object
+      properties:
+        secret:
+          type: string
+        provisioningUri:
+          type: string
+    MfaActivateRequest:
+      type: object
+      properties:
+        secret:
+          type: string
+          minLength: 1
+        totpCode:
+          type: string
+          minLength: 1
+    InviteUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          minLength: 1
+        fullName:
+          type: string
+          minLength: 1
+        roleId:
+          type: string
+          format: uuid
+      required:
+      - roleId
+    DataResponseInvitationResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/InvitationResponse"
+    InvitationResponse:
+      type: object
+      properties:
+        invitationId:
+          type: string
+          format: uuid
+        email:
+          type: string
+        role:
+          type: string
+        status:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        invitedBy:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+    CreateRoleRequest:
+      type: object
+      properties:
+        roleName:
+          type: string
+          maxLength: 50
+          minLength: 2
+        description:
+          type: string
+          maxLength: 255
+          minLength: 0
+        permissions:
           type: array
           items:
             type: string
-        timestamp:
-          type: string
-          format: date-time
-        traceId:
-          type: string
-
-    PageMeta:
+            minLength: 1
+          minItems: 1
+    DataResponseRoleResponse:
       type: object
-      required: [page, size, totalElements, totalPages, hasNext, hasPrevious]
       properties:
-        page:
-          type: integer
-        size:
-          type: integer
-        totalElements:
-          type: integer
-        totalPages:
-          type: integer
-        hasNext:
+        data:
+          $ref: "#/components/schemas/RoleResponse"
+    RoleResponse:
+      type: object
+      properties:
+        roleId:
+          type: string
+          format: uuid
+        roleName:
+          type: string
+        description:
+          type: string
+        builtin:
           type: boolean
-        hasPrevious:
-          type: boolean
-
-    LoginRequest:
-      type: object
-      required: [email, password]
-      properties:
-        email:
-          type: string
-          format: email
-        password:
-          type: string
-          format: password
-        merchantId:
-          type: string
-          format: uuid
-          description: Required when user belongs to multiple merchants
-
-    LoginResponse:
-      type: object
-      required: [accessToken, refreshToken, user]
-      properties:
-        accessToken:
-          type: string
-        refreshToken:
-          type: string
-        user:
-          $ref: "#/components/schemas/AuthUser"
-        mfaRequired:
-          type: boolean
-          default: false
-        mfaToken:
-          type: string
-          description: Temporary token for MFA verification step
-
-    AuthUser:
-      type: object
-      required: [id, email, merchantId, role, permissions]
-      properties:
-        id:
-          type: string
-          format: uuid
-        email:
-          type: string
-          format: email
-        merchantId:
-          type: string
-          format: uuid
-        role:
-          $ref: "#/components/schemas/Role"
-        permissions:
-          type: array
-          items:
-            $ref: "#/components/schemas/Permission"
-
-    MerchantUser:
-      type: object
-      required: [id, merchantId, email, firstName, lastName, role, permissions, active, createdAt, updatedAt]
-      properties:
-        id:
-          type: string
-          format: uuid
-        merchantId:
-          type: string
-          format: uuid
-        email:
-          type: string
-          format: email
-        firstName:
-          type: string
-        lastName:
-          type: string
-        role:
-          $ref: "#/components/schemas/Role"
-        permissions:
-          type: array
-          items:
-            $ref: "#/components/schemas/Permission"
         active:
           type: boolean
-        lastLoginAt:
-          type: string
-          format: date-time
+        userCount:
+          type: integer
+          format: int64
+        permissions:
+          type: array
+          items:
+            type: string
         createdAt:
           type: string
           format: date-time
         updatedAt:
           type: string
           format: date-time
-
-    InviteUserRequest:
-      type: object
-      required: [email, firstName, lastName, role]
-      properties:
-        email:
-          type: string
-          format: email
-        firstName:
-          type: string
-        lastName:
-          type: string
-        role:
-          $ref: "#/components/schemas/Role"
-
-    UpdateUserRequest:
-      type: object
-      properties:
-        role:
-          $ref: "#/components/schemas/Role"
-        active:
-          type: boolean
-
-    Invitation:
-      type: object
-      required: [email, merchantName, role, expiresAt]
-      properties:
-        email:
-          type: string
-          format: email
-        merchantName:
-          type: string
-        role:
-          $ref: "#/components/schemas/Role"
-        expiresAt:
-          type: string
-          format: date-time
-
-    AcceptInvitationRequest:
-      type: object
-      required: [password, termsAccepted]
-      properties:
-        password:
-          type: string
-          format: password
-          minLength: 12
-        firstName:
-          type: string
-        lastName:
-          type: string
-        termsAccepted:
-          type: boolean
-
-    ForgotPasswordRequest:
-      type: object
-      required: [email]
-      properties:
-        email:
-          type: string
-          format: email
-
-    ResetPasswordRequest:
-      type: object
-      required: [token, newPassword]
-      properties:
-        token:
-          type: string
-        newPassword:
-          type: string
-          format: password
-          minLength: 12
-
-    MfaSetupResponse:
-      type: object
-      required: [secret, qrCodeUri, backupCodes]
-      properties:
-        secret:
-          type: string
-        qrCodeUri:
-          type: string
-          format: uri
-        backupCodes:
-          type: array
-          items:
-            type: string
-
     MfaVerifyRequest:
       type: object
-      required: [code]
       properties:
-        code:
+        mfaChallengeId:
           type: string
-          pattern: "^[0-9]{6}$"
-        mfaToken:
+          minLength: 1
+        totpCode:
           type: string
-          description: Temporary token from login response
-
-    RoleDetail:
+          minLength: 1
+          pattern: "\\d{6}"
+    DataResponseLoginResponse:
       type: object
-      required: [name, permissions, builtIn]
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          $ref: "#/components/schemas/Role"
-        label:
-          type: string
-        description:
-          type: string
-        permissions:
-          type: array
-          items:
-            $ref: "#/components/schemas/Permission"
-        builtIn:
-          type: boolean
-
-    CreateRoleRequest:
-      type: object
-      required: [name, permissions]
-      properties:
-        name:
-          type: string
-        label:
-          type: string
-        description:
-          type: string
-        permissions:
-          type: array
-          items:
-            $ref: "#/components/schemas/Permission"
-
-    ApiKey:
-      type: object
-      required: [id, name, prefix, createdAt, active]
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        prefix:
-          type: string
-          description: First 8 chars of the key for identification
-        scopes:
-          type: array
-          items:
-            type: string
-        active:
-          type: boolean
-        lastUsedAt:
-          type: string
-          format: date-time
-        expiresAt:
-          type: string
-          format: date-time
-        createdAt:
-          type: string
-          format: date-time
-
-    CreateApiKeyRequest:
-      type: object
-      required: [name]
-      properties:
-        name:
-          type: string
-        scopes:
-          type: array
-          items:
-            type: string
-        expiresInDays:
-          type: integer
-          minimum: 1
-          maximum: 365
-
-    ApiKeyCreated:
-      type: object
-      required: [id, name, rawKey, prefix, createdAt]
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        rawKey:
-          type: string
-          description: Full API key — shown only once
-        prefix:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-
-    OAuthClient:
-      type: object
-      required: [id, clientId, name, redirectUris, createdAt, active]
-      properties:
-        id:
-          type: string
-          format: uuid
-        clientId:
-          type: string
-        name:
-          type: string
-        redirectUris:
-          type: array
-          items:
-            type: string
-            format: uri
-        grantTypes:
-          type: array
-          items:
-            type: string
-        scopes:
-          type: array
-          items:
-            type: string
-        active:
-          type: boolean
-        createdAt:
-          type: string
-          format: date-time
-
-    CreateOAuthClientRequest:
-      type: object
-      required: [name, redirectUris]
-      properties:
-        name:
-          type: string
-        redirectUris:
-          type: array
-          items:
-            type: string
-            format: uri
-        grantTypes:
-          type: array
-          items:
-            type: string
-          default: [authorization_code]
-        scopes:
-          type: array
-          items:
-            type: string
-
-    OAuthClientCreated:
-      type: object
-      required: [id, clientId, clientSecret, name, redirectUris, createdAt]
-      properties:
-        id:
-          type: string
-          format: uuid
-        clientId:
-          type: string
-        clientSecret:
-          type: string
-          description: Client secret — shown only once
-        name:
-          type: string
-        redirectUris:
-          type: array
-          items:
-            type: string
-            format: uri
-        createdAt:
-          type: string
-          format: date-time
-
-    # Wrapper types for DataResponse/PageResponse patterns
-    DataResponse_LoginResponse:
-      type: object
-      required: [data]
       properties:
         data:
           $ref: "#/components/schemas/LoginResponse"
-
-    DataResponse_AuthUser:
+    LoginResponse:
       type: object
-      required: [data]
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        tokenType:
+          type: string
+        expiresIn:
+          type: integer
+          format: int32
+        user:
+          $ref: "#/components/schemas/UserInfo"
+    UserInfo:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        merchantId:
+          type: string
+          format: uuid
+        fullName:
+          type: string
+        role:
+          type: string
+        permissions:
+          type: array
+          items:
+            type: string
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+    DataResponseObject:
+      type: object
       properties:
         data:
-          $ref: "#/components/schemas/AuthUser"
-
-    DataResponse_MfaSetupResponse:
+          type: object
+    AcceptInvitationRequest:
       type: object
-      required: [data]
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          maxLength: 2147483647
+          minLength: 12
+    DataResponseUserResponse:
+      type: object
       properties:
         data:
-          $ref: "#/components/schemas/MfaSetupResponse"
-
-    DataResponse_MerchantUser:
+          $ref: "#/components/schemas/UserResponse"
+    RoleSummary:
       type: object
-      required: [data]
+      properties:
+        roleId:
+          type: string
+          format: uuid
+        roleName:
+          type: string
+    UserResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        merchantId:
+          type: string
+          format: uuid
+        email:
+          type: string
+        fullName:
+          type: string
+        role:
+          $ref: "#/components/schemas/RoleSummary"
+        status:
+          type: string
+        mfaEnabled:
+          type: boolean
+        lastLoginAt:
+          type: string
+          format: date-time
+        activatedAt:
+          type: string
+          format: date-time
+        suspendedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+    RefreshTokenRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          minLength: 1
+    DataResponseRefreshTokenResponse:
+      type: object
       properties:
         data:
-          $ref: "#/components/schemas/MerchantUser"
-
-    DataResponse_RoleDetail:
+          $ref: "#/components/schemas/RefreshTokenResponse"
+    RefreshTokenResponse:
       type: object
-      required: [data]
+      properties:
+        accessToken:
+          type: string
+        expiresIn:
+          type: integer
+          format: int32
+    ChangeUserRoleRequest:
+      type: object
+      properties:
+        roleId:
+          type: string
+          format: uuid
+      required:
+      - roleId
+    ChangeRoleResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        oldRole:
+          type: string
+        newRole:
+          type: string
+        changedAt:
+          type: string
+          format: date-time
+        changedBy:
+          type: string
+          format: uuid
+    DataResponseChangeRoleResponse:
+      type: object
       properties:
         data:
-          $ref: "#/components/schemas/RoleDetail"
-
-    DataResponse_RoleDetailList:
+          $ref: "#/components/schemas/ChangeRoleResponse"
+    UpdateRoleRequest:
       type: object
-      required: [data]
+      properties:
+        permissions:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          minItems: 1
+    Page:
+      type: object
+      properties:
+        number:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    PageResponseUserResponse:
+      type: object
       properties:
         data:
           type: array
           items:
-            $ref: "#/components/schemas/RoleDetail"
-
-    DataResponse_ApiKeyList:
+            $ref: "#/components/schemas/UserResponse"
+        page:
+          $ref: "#/components/schemas/Page"
+    PageResponseRoleResponse:
       type: object
-      required: [data]
       properties:
         data:
           type: array
           items:
-            $ref: "#/components/schemas/ApiKey"
-
-    DataResponse_ApiKeyCreated:
+            $ref: "#/components/schemas/RoleResponse"
+        page:
+          $ref: "#/components/schemas/Page"
+    DataResponsePermissionCheckResponse:
       type: object
-      required: [data]
       properties:
         data:
-          $ref: "#/components/schemas/ApiKeyCreated"
-
-    DataResponse_ApiKey:
+          $ref: "#/components/schemas/PermissionCheckResponse"
+    PermissionCheckResponse:
       type: object
-      required: [data]
       properties:
-        data:
-          $ref: "#/components/schemas/ApiKey"
-
-    DataResponse_OAuthClientList:
+        allowed:
+          type: boolean
+        role:
+          type: string
+        via:
+          type: string
+    DeactivateUserRequest:
       type: object
-      required: [data]
       properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/OAuthClient"
-
-    DataResponse_OAuthClientCreated:
-      type: object
-      required: [data]
-      properties:
-        data:
-          $ref: "#/components/schemas/OAuthClientCreated"
-
-    DataResponse_Invitation:
-      type: object
-      required: [data]
-      properties:
-        data:
-          $ref: "#/components/schemas/Invitation"
-
-    PageResponse_MerchantUser:
-      type: object
-      required: [data, meta]
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/MerchantUser"
-        meta:
-          $ref: "#/components/schemas/PageMeta"
+        reason:
+          type: string
+          minLength: 1

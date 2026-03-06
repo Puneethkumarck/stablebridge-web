@@ -19,8 +19,7 @@ import { Spinner } from '@stablebridge/ui/components/spinner';
 
 interface MfaSetupData {
   secret: string;
-  qrCodeUri: string;
-  backupCodes: string[];
+  provisioningUri: string;
 }
 
 export default function MfaSetupPage() {
@@ -69,7 +68,7 @@ export default function MfaSetupPage() {
       const res = await fetch('/api/auth/mfa/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ totpCode: code }),
         credentials: 'include',
       });
       const result = await res.json();
@@ -158,24 +157,12 @@ export default function MfaSetupPage() {
                   id="code"
                   inputMode="numeric"
                   maxLength={6}
-                  onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
                   placeholder="000000"
                   value={code}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
                 />
               </div>
 
-              <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
-                <p className="mb-2 text-xs font-medium text-amber-800">
-                  Save these backup codes in a safe place:
-                </p>
-                <div className="grid grid-cols-2 gap-1">
-                  {setupData.backupCodes.map((backupCode) => (
-                    <code className="text-xs text-amber-700" key={backupCode}>
-                      {backupCode}
-                    </code>
-                  ))}
-                </div>
-              </div>
             </>
           ) : null}
         </CardContent>

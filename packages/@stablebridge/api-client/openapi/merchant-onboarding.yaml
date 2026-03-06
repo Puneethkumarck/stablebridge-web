@@ -1,303 +1,979 @@
 openapi: 3.1.0
 info:
-  title: StableBridge Merchant Onboarding Service (S11)
-  description: Merchant onboarding, KYB verification, and lifecycle management
-  version: 1.0.0
+  title: S11 Merchant Onboarding API
+  description: "Merchant onboarding, KYB verification, and lifecycle management"
   contact:
-    name: StableBridge Engineering
-
+    name: StableBridge Platform
+  version: 1.0.0
 servers:
-  - url: /api
-    description: Next.js API proxy
-
-tags:
-  - name: Merchants
-    description: Merchant management and onboarding
-
+- url: http://localhost/onboarding
+  description: NGINX Ingress (Kind cluster)
 paths:
-  /merchants:
+  /api/v1/merchants:
     get:
+      tags:
+      - merchant-controller
+      summary: List merchants with pagination and optional status filter
       operationId: listMerchants
-      tags: [Merchants]
-      summary: List all merchants (admin only)
-      security:
-        - bearerAuth: []
       parameters:
-        - $ref: "#/components/parameters/Page"
-        - $ref: "#/components/parameters/Size"
-        - name: status
-          in: query
-          schema:
-            $ref: "#/components/schemas/MerchantStatus"
-        - name: search
-          in: query
-          description: Search by legal name, trading name, or registration number
-          schema:
-            type: string
-        - name: countryCode
-          in: query
-          schema:
-            type: string
-            pattern: "^[A-Z]{2}$"
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - APPLIED
+          - KYB_IN_PROGRESS
+          - KYB_MANUAL_REVIEW
+          - KYB_REJECTED
+          - PENDING_APPROVAL
+          - ACTIVE
+          - SUSPENDED
+          - CLOSED
       responses:
-        "200":
-          description: Paginated merchant list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PageResponse_MerchantSummary"
-
-  /merchants/{merchantId}:
-    get:
-      operationId: getMerchant
-      tags: [Merchants]
-      summary: Get merchant details
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-      responses:
-        "200":
-          description: Merchant details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DataResponse_Merchant"
         "404":
-          description: Merchant not found
+          description: Not Found
           content:
-            application/json:
+            '*/*':
               schema:
                 $ref: "#/components/schemas/ApiError"
-
-    patch:
-      operationId: updateMerchant
-      tags: [Merchants]
-      summary: Update merchant details
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/IdempotencyKey"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseMerchantResponse"
+    post:
+      tags:
+      - merchant-controller
+      operationId: apply
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateMerchantRequest"
+              $ref: "#/components/schemas/MerchantApplicationRequest"
+        required: true
       responses:
-        "200":
-          description: Merchant updated
+        "404":
+          description: Not Found
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/DataResponse_Merchant"
-
-  /merchants/{merchantId}/activate:
-    post:
-      operationId: activateMerchant
-      tags: [Merchants]
-      summary: Activate a KYB-approved merchant (admin only)
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/IdempotencyKey"
-      responses:
-        "200":
-          description: Merchant activated
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/DataResponse_Merchant"
-
-  /merchants/{merchantId}/suspend:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MerchantApplicationResponse"
+  /api/v1/merchants/{merchantId}/suspend:
     post:
-      operationId: suspendMerchant
-      tags: [Merchants]
-      summary: Suspend a merchant (admin only)
-      security:
-        - bearerAuth: []
+      tags:
+      - merchant-controller
+      operationId: suspend
       parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/IdempotencyKey"
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/SuspendMerchantRequest"
+        required: true
       responses:
-        "200":
-          description: Merchant suspended
+        "404":
+          description: Not Found
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/DataResponse_Merchant"
-
-  /merchants/{merchantId}/reactivate:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "202":
+          description: Accepted
+  /api/v1/merchants/{merchantId}/reactivate:
     post:
-      operationId: reactivateMerchant
-      tags: [Merchants]
-      summary: Reactivate a suspended merchant (admin only)
-      security:
-        - bearerAuth: []
+      tags:
+      - merchant-controller
+      operationId: reactivate
       parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/IdempotencyKey"
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
       responses:
-        "200":
-          description: Merchant reactivated
+        "404":
+          description: Not Found
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/DataResponse_Merchant"
-
-  /merchants/{merchantId}/close:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "202":
+          description: Accepted
+  /api/v1/merchants/{merchantId}/kyb/start:
     post:
-      operationId: closeMerchant
-      tags: [Merchants]
-      summary: Permanently close a merchant account (admin only)
-      security:
-        - bearerAuth: []
+      tags:
+      - merchant-controller
+      operationId: startKyb
       parameters:
-        - $ref: "#/components/parameters/MerchantId"
-        - $ref: "#/components/parameters/IdempotencyKey"
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "202":
+          description: Accepted
+  /api/v1/merchants/{merchantId}/documents:
+    post:
+      tags:
+      - merchant-controller
+      operationId: uploadDocument
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DocumentUploadRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DocumentUploadResponse"
+  /api/v1/merchants/{merchantId}/corridors:
+    post:
+      tags:
+      - merchant-controller
+      operationId: approveCorridor
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Approved-By
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApproveCorridorRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CorridorResponse"
+  /api/v1/merchants/{merchantId}/close:
+    post:
+      tags:
+      - merchant-controller
+      operationId: close
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/CloseMerchantRequest"
       responses:
-        "200":
-          description: Merchant closed
+        "404":
+          description: Not Found
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/DataResponse_Merchant"
-
-  /merchants/{merchantId}/kyb-status:
-    get:
-      operationId: getMerchantKybStatus
-      tags: [Merchants]
-      summary: Get KYB verification status timeline
-      security:
-        - bearerAuth: []
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "202":
+          description: Accepted
+  /api/v1/merchants/{merchantId}/activate:
+    post:
+      tags:
+      - merchant-controller
+      operationId: activate
       parameters:
-        - $ref: "#/components/parameters/MerchantId"
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActivateMerchantRequest"
+        required: true
       responses:
-        "200":
-          description: KYB status timeline
+        "404":
+          description: Not Found
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/DataResponse_KybStatus"
-
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MerchantResponse"
+  /api/internal/webhooks/onfido:
+    post:
+      tags:
+      - kyb-webhook-controller
+      operationId: handleOnfidoWebhook
+      parameters:
+      - name: X-SHA2-Signature
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+  /api/v1/merchants/{merchantId}:
+    get:
+      tags:
+      - merchant-controller
+      operationId: findById
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MerchantResponse"
+    patch:
+      tags:
+      - merchant-controller
+      operationId: updateMerchant
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMerchantRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MerchantResponse"
+  /api/v1/merchants/{merchantId}/rate-limit-tier:
+    patch:
+      tags:
+      - merchant-controller
+      operationId: updateRateLimitTier
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRateLimitTierRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MerchantResponse"
+  /api/v1/merchants/{merchantId}/kyb:
+    get:
+      tags:
+      - merchant-controller
+      operationId: getKybStatus
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Unprocessable Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/KybStatusResponse"
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
-  parameters:
-    MerchantId:
-      name: merchantId
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-
-    IdempotencyKey:
-      name: Idempotency-Key
-      in: header
-      required: true
-      schema:
-        type: string
-        format: uuid
-
-    Page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-
-    Size:
-      name: size
-      in: query
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
-
   schemas:
-    MerchantStatus:
-      type: string
-      enum:
-        - DRAFT
-        - PENDING_REVIEW
-        - KYB_IN_PROGRESS
-        - KYB_APPROVED
-        - KYB_REJECTED
-        - ACTIVATED
-        - SUSPENDED
-        - DEACTIVATED
-
     ApiError:
       type: object
-      required: [code, message, timestamp]
       properties:
         code:
           type: string
-          example: "MO-0003"
+        status:
+          type: string
         message:
           type: string
-          example: "Merchant not found"
-        details:
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    BeneficialOwnerDto:
+      type: object
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+        dateOfBirth:
+          type: string
+          format: date
+        nationality:
+          type: string
+          minLength: 1
+        ownershipPct:
+          type: number
+          maximum: 100.00
+          minimum: 0.01
+        isPoliticallyExposed:
+          type: boolean
+        nationalIdRef:
+          type: string
+      required:
+      - dateOfBirth
+      - ownershipPct
+    BusinessAddressDto:
+      type: object
+      properties:
+        streetLine1:
+          type: string
+          minLength: 1
+        streetLine2:
+          type: string
+        city:
+          type: string
+          minLength: 1
+        stateProvince:
+          type: string
+        postcode:
+          type: string
+          minLength: 1
+        country:
+          type: string
+          maxLength: 2
+          minLength: 2
+    MerchantApplicationRequest:
+      type: object
+      properties:
+        legalName:
+          type: string
+          minLength: 1
+        tradingName:
+          type: string
+          minLength: 1
+        registrationNumber:
+          type: string
+          minLength: 1
+        registrationCountry:
+          type: string
+          maxLength: 2
+          minLength: 2
+        entityType:
+          type: string
+          minLength: 1
+        websiteUrl:
+          type: string
+          minLength: 1
+        primaryCurrency:
+          type: string
+          maxLength: 3
+          minLength: 3
+        primaryContactEmail:
+          type: string
+          minLength: 1
+        primaryContactName:
+          type: string
+          minLength: 1
+        registeredAddress:
+          $ref: "#/components/schemas/BusinessAddressDto"
+        beneficialOwners:
+          type: array
+          items:
+            $ref: "#/components/schemas/BeneficialOwnerDto"
+          minItems: 1
+        requestedCorridors:
           type: array
           items:
             type: string
-        timestamp:
+          minItems: 1
+      required:
+      - registeredAddress
+    MerchantApplicationResponse:
+      type: object
+      properties:
+        merchantId:
+          type: string
+          format: uuid
+        status:
+          type: string
+        kybStatus:
+          type: string
+        legalName:
+          type: string
+        createdAt:
           type: string
           format: date-time
-        traceId:
+    SuspendMerchantRequest:
+      type: object
+      properties:
+        reason:
           type: string
-
-    PageMeta:
+          minLength: 1
+        suspendedBy:
+          type: string
+          format: uuid
+    DocumentUploadRequest:
       type: object
-      required: [page, size, totalElements, totalPages, hasNext, hasPrevious]
       properties:
-        page:
-          type: integer
-        size:
-          type: integer
-        totalElements:
-          type: integer
-        totalPages:
-          type: integer
-        hasNext:
-          type: boolean
-        hasPrevious:
-          type: boolean
-
-    Merchant:
+        documentType:
+          type: string
+          minLength: 1
+        fileName:
+          type: string
+          minLength: 1
+    DocumentUploadResponse:
       type: object
+      properties:
+        uploadUrl:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+    ApproveCorridorRequest:
+      type: object
+      properties:
+        sourceCountry:
+          type: string
+          maxLength: 2
+          minLength: 2
+        targetCountry:
+          type: string
+          maxLength: 2
+          minLength: 2
+        currencies:
+          type: array
+          items:
+            type: string
+          minItems: 1
+        maxAmountUsd:
+          type: number
+          minimum: 1.00
+        expiresAt:
+          type: string
+          format: date-time
       required:
-        - id
-        - legalName
-        - tradingName
-        - registrationNumber
-        - countryCode
-        - status
-        - primaryContactEmail
-        - primaryContactName
-        - createdAt
-        - updatedAt
+      - expiresAt
+      - maxAmountUsd
+    CorridorResponse:
+      type: object
       properties:
-        id:
+        corridorId:
+          type: string
+          format: uuid
+        merchantId:
+          type: string
+          format: uuid
+        sourceCountry:
+          type: string
+        targetCountry:
+          type: string
+        currencies:
+          type: array
+          items:
+            type: string
+        maxAmountUsd:
+          type: number
+        approvedBy:
+          type: string
+          format: uuid
+        approvedAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+    CloseMerchantRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+        closedBy:
+          type: string
+          format: uuid
+    ActivateMerchantRequest:
+      type: object
+      properties:
+        approvedBy:
+          type: string
+          format: uuid
+        scopes:
+          type: array
+          items:
+            type: string
+          minItems: 1
+      required:
+      - approvedBy
+    MerchantResponse:
+      type: object
+      properties:
+        merchantId:
           type: string
           format: uuid
         legalName:
@@ -306,118 +982,106 @@ components:
           type: string
         registrationNumber:
           type: string
-        countryCode:
+        registrationCountry:
           type: string
-          pattern: "^[A-Z]{2}$"
-        status:
-          $ref: "#/components/schemas/MerchantStatus"
+        entityType:
+          type: string
+        websiteUrl:
+          type: string
+        primaryCurrency:
+          type: string
         primaryContactEmail:
           type: string
-          format: email
         primaryContactName:
           type: string
-        website:
+        status:
           type: string
-          format: uri
-        incorporationDate:
+        kybStatus:
           type: string
-          format: date
+        riskTier:
+          type: string
+        rateLimitTier:
+          type: string
+        allowedScopes:
+          type: array
+          items:
+            type: string
+        requestedCorridors:
+          type: array
+          items:
+            type: string
         createdAt:
           type: string
           format: date-time
         updatedAt:
           type: string
           format: date-time
-
-    MerchantSummary:
-      type: object
-      required: [id, legalName, tradingName, countryCode, status]
-      properties:
-        id:
+        activatedAt:
           type: string
-          format: uuid
-        legalName:
-          type: string
-        tradingName:
-          type: string
-        countryCode:
-          type: string
-        status:
-          $ref: "#/components/schemas/MerchantStatus"
-
+          format: date-time
     UpdateMerchantRequest:
       type: object
       properties:
         tradingName:
           type: string
-        primaryContactEmail:
+        websiteUrl:
           type: string
-          format: email
-        primaryContactName:
-          type: string
-        website:
-          type: string
-          format: uri
-
-    SuspendMerchantRequest:
+        registeredAddress:
+          $ref: "#/components/schemas/BusinessAddressDto"
+    UpdateRateLimitTierRequest:
       type: object
       properties:
-        reason:
+        newTier:
           type: string
-
-    CloseMerchantRequest:
+          minLength: 1
+        updatedBy:
+          type: string
+          format: uuid
+      required:
+      - updatedBy
+    Page:
       type: object
       properties:
-        reason:
-          type: string
-
-    KybEvent:
+        number:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    PageResponseMerchantResponse:
       type: object
-      required: [status, timestamp]
       properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/MerchantResponse"
+        page:
+          $ref: "#/components/schemas/Page"
+    KybStatusResponse:
+      type: object
+      properties:
+        kybId:
+          type: string
+          format: uuid
         status:
-          $ref: "#/components/schemas/MerchantStatus"
-        timestamp:
+          type: string
+        provider:
+          type: string
+        providerRef:
+          type: string
+        initiatedAt:
           type: string
           format: date-time
-        note:
+        completedAt:
           type: string
-        performedBy:
-          type: string
-
-    KybStatus:
-      type: object
-      required: [currentStatus, timeline]
-      properties:
-        currentStatus:
-          $ref: "#/components/schemas/MerchantStatus"
-        timeline:
-          type: array
-          items:
-            $ref: "#/components/schemas/KybEvent"
-
-    # DataResponse / PageResponse wrappers
-    DataResponse_Merchant:
-      type: object
-      required: [data]
-      properties:
-        data:
-          $ref: "#/components/schemas/Merchant"
-
-    DataResponse_KybStatus:
-      type: object
-      required: [data]
-      properties:
-        data:
-          $ref: "#/components/schemas/KybStatus"
-
-    PageResponse_MerchantSummary:
-      type: object
-      required: [data, meta]
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/MerchantSummary"
-        meta:
-          $ref: "#/components/schemas/PageMeta"
+          format: date-time
+        riskSignals:
+          type: object
+          additionalProperties:
+            type: object

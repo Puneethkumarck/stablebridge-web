@@ -30,8 +30,8 @@ export function useApiKeys(merchantId: string) {
     queryFn: ({ signal }) =>
       client
         .get<DataResponse<ApiKey[]>>(
-          `/merchants/${merchantId}/api-keys`,
-          { signal },
+          '/gateway/v1/api-keys',
+          { params: { merchantId }, signal },
         )
         .then((r) => r.data),
   });
@@ -39,8 +39,10 @@ export function useApiKeys(merchantId: string) {
 
 interface CreateApiKeyRequest {
   name: string;
+  environment?: string;
   scopes?: string[];
-  expiresInDays?: number;
+  allowedIps?: string[];
+  expiresInSeconds?: number;
 }
 
 export function useCreateApiKey(merchantId: string) {
@@ -51,8 +53,8 @@ export function useCreateApiKey(merchantId: string) {
     mutationFn: (data: CreateApiKeyRequest) =>
       client
         .post<DataResponse<ApiKeyCreated>>(
-          `/merchants/${merchantId}/api-keys`,
-          { body: data },
+          '/gateway/v1/api-keys',
+          { body: { ...data, merchantId } },
         )
         .then((r) => r.data),
     onSuccess: () => {
@@ -67,11 +69,7 @@ export function useRevokeApiKey(merchantId: string) {
 
   return useMutation({
     mutationFn: (keyId: string) =>
-      client
-        .post<DataResponse<ApiKey>>(
-          `/merchants/${merchantId}/api-keys/${keyId}/revoke`,
-        )
-        .then((r) => r.data),
+      client.delete<void>(`/gateway/v1/api-keys/${keyId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.apiKeys(merchantId) });
     },

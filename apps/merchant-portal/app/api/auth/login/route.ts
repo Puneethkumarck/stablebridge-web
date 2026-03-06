@@ -7,12 +7,13 @@ import {
   REFRESH_TOKEN_MAX_AGE,
 } from '@stablebridge/auth';
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:8080';
+const API_BASE = process.env.API_BASE_URL ?? 'http://localhost';
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
+  const { merchantId } = body;
 
-  const upstream = await fetch(`${API_BASE}/api/v1/auth/login`, {
+  const upstream = await fetch(`${API_BASE}/iam/v1/merchants/${merchantId}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

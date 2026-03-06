@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useUpdateUser } from '@stablebridge/api-client/hooks';
-import type { Role } from '@stablebridge/types';
+import { useChangeUserRole, useRoles } from '@stablebridge/api-client/hooks';
 import { Button } from '@stablebridge/ui/components/button';
 import { Label } from '@stablebridge/ui/components/label';
 import {
@@ -23,17 +22,11 @@ import {
 import { Alert, AlertDescription } from '@stablebridge/ui/components/alert';
 import { Spinner } from '@stablebridge/ui/components/spinner';
 
-const ROLES: { value: Role; label: string }[] = [
-  { value: 'ADMIN', label: 'Admin' },
-  { value: 'OPERATOR', label: 'Operator' },
-  { value: 'VIEWER', label: 'Viewer' },
-];
-
 interface ChangeRoleDialogProps {
   readonly merchantId: string;
   readonly userId: string;
   readonly userName: string;
-  readonly currentRole: string;
+  readonly currentRoleId: string;
   readonly open: boolean;
   readonly onOpenChange: (open: boolean) => void;
 }
@@ -42,29 +35,31 @@ export function ChangeRoleDialog({
   merchantId,
   userId,
   userName,
-  currentRole,
+  currentRoleId,
   open,
   onOpenChange,
 }: ChangeRoleDialogProps) {
-  const [selectedRole, setSelectedRole] = useState<Role>(currentRole as Role);
-  const updateUser = useUpdateUser(merchantId, userId);
+  const [selectedRoleId, setSelectedRoleId] = useState(currentRoleId);
+  const changeRole = useChangeUserRole(merchantId, userId);
+  const { data: rolesData } = useRoles(merchantId);
+  const roles = rolesData?.data ?? [];
 
   async function handleSubmit() {
-    if (selectedRole === currentRole) {
+    if (selectedRoleId === currentRoleId) {
       onOpenChange(false);
       return;
     }
 
     try {
-      await updateUser.mutateAsync({ role: selectedRole });
+      await changeRole.mutateAsync({ roleId: selectedRoleId });
       onOpenChange(false);
     } catch {
-      // Error shown via updateUser.error
+      // Error shown via changeRole.error
     }
   }
 
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Change Role</DialogTitle>
@@ -73,22 +68,22 @@ export function ChangeRoleDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {updateUser.error ? (
+        {changeRole.error ? (
           <Alert variant="destructive">
-            <AlertDescription>{updateUser.error.message}</AlertDescription>
+            <AlertDescription>{changeRole.error.message}</AlertDescription>
           </Alert>
         ) : null}
 
         <div className="space-y-2">
           <Label>New Role</Label>
-          <Select onValueChange={(v) => setSelectedRole(v as Role)} value={selectedRole}>
+          <Select value={selectedRoleId} onValueChange={setSelectedRoleId}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {ROLES.map((role) => (
-                <SelectItem key={role.value} value={role.value}>
-                  {role.label}
+              {roles.map((role) => (
+                <SelectItem key={role.roleId} value={role.roleId}>
+                  {role.roleName}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -96,11 +91,11 @@ export function ChangeRoleDialog({
         </div>
 
         <DialogFooter>
-          <Button onClick={() => onOpenChange(false)} type="button" variant="outline">
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button disabled={updateUser.isPending} onClick={handleSubmit}>
-            {updateUser.isPending ? <Spinner size="sm" /> : null}
+          <Button disabled={changeRole.isPending} onClick={handleSubmit}>
+            {changeRole.isPending ? <Spinner size="sm" /> : null}
             Save
           </Button>
         </DialogFooter>

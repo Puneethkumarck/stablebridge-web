@@ -36,7 +36,7 @@ export default function TeamPage() {
   const reactivateUser = useReactivateUser(merchantId);
 
   const [inviteOpen, setInviteOpen] = useState(false);
-  const [roleDialogUser, setRoleDialogUser] = useState<{ id: string; name: string; role: string } | null>(null);
+  const [roleDialogUser, setRoleDialogUser] = useState<{ id: string; name: string; roleId: string; roleName: string } | null>(null);
   const [confirmAction, setConfirmAction] = useState<{
     userId: string;
     name: string;
@@ -46,7 +46,7 @@ export default function TeamPage() {
   function handleConfirmAction() {
     if (!confirmAction) return;
     if (confirmAction.action === 'suspend') {
-      suspendUser.mutate(confirmAction.userId);
+      suspendUser.mutate({ userId: confirmAction.userId });
     } else {
       reactivateUser.mutate(confirmAction.userId);
     }
@@ -83,17 +83,17 @@ export default function TeamPage() {
               </TableHeader>
               <TableBody>
                 {data?.data.map((member) => (
-                  <TableRow key={member.id}>
+                  <TableRow key={member.userId}>
                     <TableCell className="font-medium">
-                      {member.firstName} {member.lastName}
+                      {member.fullName}
                     </TableCell>
                     <TableCell className="text-zinc-500">{member.email}</TableCell>
                     <TableCell>
-                      <Badge variant="brand">{member.role}</Badge>
+                      <Badge variant="brand">{member.role.roleName}</Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={member.active ? 'success' : 'destructive'}>
-                        {member.active ? 'Active' : 'Suspended'}
+                      <Badge variant={member.status === 'ACTIVE' ? 'success' : 'destructive'}>
+                        {member.status}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-zinc-500">
@@ -102,7 +102,7 @@ export default function TeamPage() {
                         : 'Never'}
                     </TableCell>
                     <TableCell>
-                      {member.id !== user?.id ? (
+                      {member.userId !== user?.id ? (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button size="icon" variant="ghost">
@@ -113,22 +113,23 @@ export default function TeamPage() {
                             <DropdownMenuItem
                               onSelect={() =>
                                 setRoleDialogUser({
-                                  id: member.id,
-                                  name: `${member.firstName} ${member.lastName}`,
-                                  role: member.role,
+                                  id: member.userId,
+                                  name: member.fullName,
+                                  roleId: member.role.roleId,
+                                  roleName: member.role.roleName,
                                 })
                               }
                             >
                               Change role
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            {member.active ? (
+                            {member.status === 'ACTIVE' ? (
                               <DropdownMenuItem
                                 className="text-red-600 focus:text-red-600"
                                 onSelect={() =>
                                   setConfirmAction({
-                                    userId: member.id,
-                                    name: `${member.firstName} ${member.lastName}`,
+                                    userId: member.userId,
+                                    name: member.fullName,
                                     action: 'suspend',
                                   })
                                 }
@@ -139,8 +140,8 @@ export default function TeamPage() {
                               <DropdownMenuItem
                                 onSelect={() =>
                                   setConfirmAction({
-                                    userId: member.id,
-                                    name: `${member.firstName} ${member.lastName}`,
+                                    userId: member.userId,
+                                    name: member.fullName,
                                     action: 'reactivate',
                                   })
                                 }
@@ -169,23 +170,24 @@ export default function TeamPage() {
 
       <InviteUserDialog
         merchantId={merchantId}
-        onOpenChange={setInviteOpen}
         open={inviteOpen}
+        onOpenChange={setInviteOpen}
       />
 
       {roleDialogUser ? (
         <ChangeRoleDialog
-          currentRole={roleDialogUser.role}
-          merchantId={merchantId}
-          onOpenChange={(open) => { if (!open) setRoleDialogUser(null); }}
           open
+          currentRoleId={roleDialogUser.roleId}
+          merchantId={merchantId}
           userId={roleDialogUser.id}
           userName={roleDialogUser.name}
+          onOpenChange={(open) => { if (!open) setRoleDialogUser(null); }}
         />
       ) : null}
 
       {confirmAction ? (
         <ConfirmDialog
+          open
           description={
             confirmAction.action === 'suspend'
               ? `Are you sure you want to suspend ${confirmAction.name}? They will lose access immediately.`
@@ -193,10 +195,9 @@ export default function TeamPage() {
           }
           destructive={confirmAction.action === 'suspend'}
           isLoading={suspendUser.isPending || reactivateUser.isPending}
+          title={confirmAction.action === 'suspend' ? 'Suspend User' : 'Reactivate User'}
           onConfirm={handleConfirmAction}
           onOpenChange={(open) => { if (!open) setConfirmAction(null); }}
-          open
-          title={confirmAction.action === 'suspend' ? 'Suspend User' : 'Reactivate User'}
         />
       ) : null}
     </>

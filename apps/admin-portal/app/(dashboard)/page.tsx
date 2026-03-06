@@ -5,8 +5,8 @@ import { Spinner } from '@stablebridge/ui/components/spinner';
 
 const STAT_CARDS = [
   { label: 'Total Merchants', statusFilter: undefined },
-  { label: 'Pending Review', statusFilter: 'PENDING_REVIEW' as const },
-  { label: 'Active', statusFilter: 'ACTIVATED' as const },
+  { label: 'Pending Approval', statusFilter: 'PENDING_APPROVAL' as const },
+  { label: 'Active', statusFilter: 'ACTIVE' as const },
   { label: 'Suspended', statusFilter: 'SUSPENDED' as const },
 ] as const;
 
@@ -32,14 +32,14 @@ function StatCard({
   readonly statusFilter: string | undefined;
 }) {
   const { data, isLoading } = useMerchants(
-    statusFilter ? { status: statusFilter as 'PENDING_REVIEW' } : undefined,
+    statusFilter ? { status: statusFilter as 'PENDING_APPROVAL' } : undefined,
   );
 
   return (
     <div className="rounded-lg border border-zinc-200 p-6 shadow-sm">
       <p className="text-sm font-medium text-zinc-500">{label}</p>
       <p className="mt-2 text-3xl font-bold text-zinc-950">
-        {isLoading ? <Spinner size="sm" /> : (data?.meta.totalElements ?? '—')}
+        {isLoading ? <Spinner size="sm" /> : (data?.page.totalElements ?? '—')}
       </p>
     </div>
   );

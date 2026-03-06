@@ -32,8 +32,8 @@ const ALL_PERMISSIONS: { value: Permission; label: string; group: string }[] = [
 ];
 
 const schema = z.object({
-  name: z.string().min(1, 'Role name is required'),
-  description: z.string().optional(),
+  roleName: z.string().min(2, 'Role name is required').max(50),
+  description: z.string().max(255).optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -72,7 +72,7 @@ export function CreateRoleDialog({ merchantId, open, onOpenChange }: CreateRoleD
   async function onSubmit(data: FormData) {
     try {
       await createRole.mutateAsync({
-        name: data.name,
+        roleName: data.roleName,
         ...(data.description ? { description: data.description } : {}),
         permissions: [...selectedPermissions],
       });
@@ -96,7 +96,7 @@ export function CreateRoleDialog({ merchantId, open, onOpenChange }: CreateRoleD
   const groups = [...new Set(ALL_PERMISSIONS.map((p) => p.group))];
 
   return (
-    <Dialog onOpenChange={handleOpenChange} open={open}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create Custom Role</DialogTitle>
@@ -112,15 +112,15 @@ export function CreateRoleDialog({ merchantId, open, onOpenChange }: CreateRoleD
           ) : null}
 
           <div className="space-y-2">
-            <Label htmlFor="name">Role Name</Label>
+            <Label htmlFor="roleName">Role Name</Label>
             <Input
-              aria-invalid={errors.name ? 'true' : undefined}
-              id="name"
+              aria-invalid={errors.roleName ? 'true' : undefined}
+              id="roleName"
               placeholder="e.g., Payment Approver"
-              {...register('name')}
+              {...register('roleName')}
             />
-            {errors.name ? (
-              <p className="text-xs text-red-600">{errors.name.message}</p>
+            {errors.roleName ? (
+              <p className="text-xs text-red-600">{errors.roleName.message}</p>
             ) : null}
           </div>
 
@@ -149,8 +149,8 @@ export function CreateRoleDialog({ merchantId, open, onOpenChange }: CreateRoleD
                       <input
                         checked={selectedPermissions.has(perm.value)}
                         className="h-4 w-4 rounded border-zinc-300 text-brand-600 focus:ring-brand-500"
-                        onChange={() => togglePermission(perm.value)}
                         type="checkbox"
+                        onChange={() => togglePermission(perm.value)}
                       />
                       <span className="text-sm text-zinc-700">{perm.label}</span>
                     </label>
@@ -161,7 +161,7 @@ export function CreateRoleDialog({ merchantId, open, onOpenChange }: CreateRoleD
           </div>
 
           <DialogFooter>
-            <Button onClick={() => handleOpenChange(false)} type="button" variant="outline">
+            <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>
             <Button disabled={isSubmitting || selectedPermissions.size === 0} type="submit">

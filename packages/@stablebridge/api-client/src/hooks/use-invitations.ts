@@ -23,7 +23,7 @@ export function useInvitation(token: string) {
     queryKey: ['invitations', token],
     queryFn: ({ signal }) =>
       client
-        .get<DataResponse<Invitation>>(`/invitations/${token}`, { signal })
+        .get<DataResponse<Invitation>>(`/iam/v1/invitations/${token}`, { signal })
         .then((r) => r.data),
     retry: false,
   });

@@ -2,7 +2,8 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { ACCESS_TOKEN_COOKIE } from '@stablebridge/auth';
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:8080';
+// TODO: S13 has no /auth/me endpoint — may need to decode JWT or add backend endpoint
+const API_BASE = process.env.API_BASE_URL ?? 'http://localhost';
 
 export async function GET() {
   const cookieStore = await cookies();
@@ -15,7 +16,7 @@ export async function GET() {
     );
   }
 
-  const upstream = await fetch(`${API_BASE}/api/v1/auth/me`, {
+  const upstream = await fetch(`${API_BASE}/iam/v1/auth/me`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 

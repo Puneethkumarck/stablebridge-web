@@ -15,9 +15,8 @@ interface OAuthClient {
   id: string;
   clientId: string;
   name: string;
-  redirectUris: string[];
-  grantTypes?: string[];
   scopes?: string[];
+  grantTypes?: string[];
   active: boolean;
   createdAt: string;
 }
@@ -34,7 +33,7 @@ export function OAuthClientDetailDialog({
   onOpenChange,
 }: OAuthClientDetailDialogProps) {
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{client.name}</DialogTitle>
@@ -56,17 +55,6 @@ export function OAuthClientDetailDialog({
               <Badge variant={client.active ? 'success' : 'destructive'}>
                 {client.active ? 'Active' : 'Inactive'}
               </Badge>
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-sm font-medium text-zinc-500">Redirect URIs</dt>
-            <dd className="mt-1 space-y-1">
-              {client.redirectUris.map((uri) => (
-                <div key={uri}>
-                  <code className="rounded bg-zinc-100 px-2 py-1 text-xs">{uri}</code>
-                </div>
-              ))}
             </dd>
           </div>
 

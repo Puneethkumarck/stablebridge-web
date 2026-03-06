@@ -22,9 +22,8 @@ interface OAuthClientSummary {
   id: string;
   clientId: string;
   name: string;
-  redirectUris: string[];
-  grantTypes?: string[];
   scopes?: string[];
+  grantTypes?: string[];
   active: boolean;
   createdAt: string;
 }
@@ -54,7 +53,7 @@ export function OAuthClientsTab() {
             Manage OAuth 2.0 clients for third-party integrations.
           </p>
         </div>
-        <Button onClick={() => setCreateOpen(true)} size="sm">
+        <Button size="sm" onClick={() => setCreateOpen(true)}>
           Create Client
         </Button>
       </div>
@@ -66,7 +65,7 @@ export function OAuthClientsTab() {
               <TableHead>Name</TableHead>
               <TableHead>Client ID</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Redirect URIs</TableHead>
+              <TableHead>Scopes</TableHead>
               <TableHead>Created</TableHead>
               <TableHead className="w-24" />
             </TableRow>
@@ -86,16 +85,16 @@ export function OAuthClientsTab() {
                   </Badge>
                 </TableCell>
                 <TableCell className="max-w-48 truncate text-zinc-500">
-                  {client.redirectUris.join(', ')}
+                  {client.scopes?.join(', ') ?? '—'}
                 </TableCell>
                 <TableCell className="text-zinc-500">
                   {formatDateTime(client.createdAt)}
                 </TableCell>
                 <TableCell>
                   <Button
-                    onClick={() => setDetailClient(client)}
                     size="sm"
                     variant="ghost"
+                    onClick={() => setDetailClient(client)}
                   >
                     Details
                   </Button>
@@ -115,15 +114,15 @@ export function OAuthClientsTab() {
 
       <CreateOAuthClientDialog
         merchantId={merchantId}
-        onOpenChange={setCreateOpen}
         open={createOpen}
+        onOpenChange={setCreateOpen}
       />
 
       {detailClient ? (
         <OAuthClientDetailDialog
+          open
           client={detailClient}
           onOpenChange={(open) => { if (!open) setDetailClient(null); }}
-          open
         />
       ) : null}
     </>

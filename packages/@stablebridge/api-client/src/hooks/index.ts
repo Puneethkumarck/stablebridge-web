@@ -4,11 +4,12 @@ export {
   useMerchantUsers,
   useMerchantUser,
   useInviteUser,
-  useUpdateUser,
+  useChangeUserRole,
   useSuspendUser,
   useReactivateUser,
+  useDeactivateUser,
 } from './use-users';
-export { useRoles, useCreateRole } from './use-roles';
+export { useRoles, useCreateRole, useUpdateRole, useDeleteRole, type RoleResponse } from './use-roles';
 export {
   useMerchants,
   useMerchant,
@@ -18,6 +19,10 @@ export {
   useReactivateMerchant,
   useCloseMerchant,
   useMerchantKybStatus,
+  useStartKyb,
+  useApproveCorridor,
+  useUploadDocument,
+  useUpdateRateLimitTier,
 } from './use-merchants';
 export { useApiKeys, useCreateApiKey, useRevokeApiKey } from './use-api-keys';
 export { useOAuthClients, useCreateOAuthClient } from './use-oauth-clients';

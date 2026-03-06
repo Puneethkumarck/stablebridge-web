@@ -26,24 +26,15 @@ export const mockViewerUser: AuthUser = {
 };
 
 export const mockMerchantUser: MerchantUser = {
-  id: 'usr_admin_001',
+  userId: 'usr_admin_001',
   merchantId: 'mrc_001',
   email: 'admin@acme-corp.com',
-  firstName: 'Jane',
-  lastName: 'Doe',
-  role: 'ADMIN',
-  permissions: [
-    'payments:read',
-    'payments:write',
-    'merchants:read',
-    'merchants:write',
-    'users:read',
-    'users:write',
-    'settings:read',
-    'settings:write',
-  ],
-  active: true,
+  fullName: 'Jane Doe',
+  role: { roleId: 'role_admin_001', roleName: 'ADMIN' },
+  status: 'ACTIVE',
+  mfaEnabled: false,
   lastLoginAt: '2025-06-01T09:30:00Z',
+  activatedAt: '2025-01-15T10:00:00Z',
+  suspendedAt: undefined,
   createdAt: '2025-01-15T10:00:00Z',
-  updatedAt: '2025-01-15T10:00:00Z',
 };

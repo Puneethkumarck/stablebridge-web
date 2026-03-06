@@ -95,9 +95,9 @@ export default function ForgotPasswordPage() {
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
+              autoFocus
               aria-invalid={errors.email ? 'true' : undefined}
               autoComplete="email"
-              autoFocus
               id="email"
               placeholder="you@company.com"
               type="email"

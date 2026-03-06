@@ -51,7 +51,7 @@ export function ApiKeysTab() {
             Create and manage API keys for programmatic access.
           </p>
         </div>
-        <Button onClick={() => setCreateOpen(true)} size="sm">
+        <Button size="sm" onClick={() => setCreateOpen(true)}>
           Create API Key
         </Button>
       </div>
@@ -91,9 +91,9 @@ export function ApiKeysTab() {
                 <TableCell>
                   {key.active ? (
                     <Button
-                      onClick={() => setRevokeTarget({ id: key.id, name: key.name })}
                       size="sm"
                       variant="ghost"
+                      onClick={() => setRevokeTarget({ id: key.id, name: key.name })}
                     >
                       Revoke
                     </Button>
@@ -114,19 +114,19 @@ export function ApiKeysTab() {
 
       <CreateApiKeyDialog
         merchantId={merchantId}
-        onOpenChange={setCreateOpen}
         open={createOpen}
+        onOpenChange={setCreateOpen}
       />
 
       {revokeTarget ? (
         <ConfirmDialog
-          description={`Are you sure you want to revoke "${revokeTarget.name}"? This action cannot be undone and any integrations using this key will stop working.`}
           destructive
+          open
+          description={`Are you sure you want to revoke "${revokeTarget.name}"? This action cannot be undone and any integrations using this key will stop working.`}
           isLoading={revokeKey.isPending}
+          title="Revoke API Key"
           onConfirm={handleRevoke}
           onOpenChange={(open) => { if (!open) setRevokeTarget(null); }}
-          open
-          title="Revoke API Key"
         />
       ) : null}
     </>

@@ -21,7 +21,6 @@ import { Spinner } from '@stablebridge/ui/components/spinner';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
-  redirectUri: z.string().url('Please enter a valid URL'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -60,7 +59,6 @@ export function CreateOAuthClientDialog({
     try {
       const result = await createClient.mutateAsync({
         name: data.name,
-        redirectUris: [data.redirectUri],
       });
       setCreated({
         clientId: result.clientId,
@@ -90,7 +88,7 @@ export function CreateOAuthClientDialog({
 
   if (created) {
     return (
-      <Dialog onOpenChange={handleClose} open={open}>
+      <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>OAuth Client Created</DialogTitle>
@@ -113,9 +111,9 @@ export function CreateOAuthClientDialog({
                   {created.clientId}
                 </code>
                 <Button
-                  onClick={() => handleCopy(created.clientId, 'id')}
                   size="sm"
                   variant="outline"
+                  onClick={() => handleCopy(created.clientId, 'id')}
                 >
                   {copiedField === 'id' ? 'Copied!' : 'Copy'}
                 </Button>
@@ -129,9 +127,9 @@ export function CreateOAuthClientDialog({
                   {created.clientSecret}
                 </code>
                 <Button
-                  onClick={() => handleCopy(created.clientSecret, 'secret')}
                   size="sm"
                   variant="outline"
+                  onClick={() => handleCopy(created.clientSecret, 'secret')}
                 >
                   {copiedField === 'secret' ? 'Copied!' : 'Copy'}
                 </Button>
@@ -151,12 +149,12 @@ export function CreateOAuthClientDialog({
   }
 
   return (
-    <Dialog onOpenChange={handleClose} open={open}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create OAuth Client</DialogTitle>
           <DialogDescription>
-            Register a new OAuth 2.0 client for third-party integrations.
+            Register a new OAuth 2.0 client for API access.
           </DialogDescription>
         </DialogHeader>
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
@@ -179,22 +177,8 @@ export function CreateOAuthClientDialog({
             ) : null}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="redirectUri">Redirect URI</Label>
-            <Input
-              aria-invalid={errors.redirectUri ? 'true' : undefined}
-              id="redirectUri"
-              placeholder="https://app.example.com/callback"
-              type="url"
-              {...register('redirectUri')}
-            />
-            {errors.redirectUri ? (
-              <p className="text-xs text-red-600">{errors.redirectUri.message}</p>
-            ) : null}
-          </div>
-
           <DialogFooter>
-            <Button onClick={() => handleClose(false)} type="button" variant="outline">
+            <Button type="button" variant="outline" onClick={() => handleClose(false)}>
               Cancel
             </Button>
             <Button disabled={isSubmitting} type="submit">

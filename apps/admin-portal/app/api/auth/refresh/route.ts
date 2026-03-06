@@ -7,7 +7,7 @@ import {
   REFRESH_TOKEN_MAX_AGE,
 } from '@stablebridge/auth';
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:8080';
+const API_BASE = process.env.API_BASE_URL ?? 'http://localhost';
 
 export async function POST() {
   const cookieStore = await cookies();
@@ -20,7 +20,7 @@ export async function POST() {
     );
   }
 
-  const upstream = await fetch(`${API_BASE}/api/v1/auth/refresh`, {
+  const upstream = await fetch(`${API_BASE}/iam/v1/auth/refresh`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

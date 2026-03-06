@@ -7,9 +7,8 @@ interface OAuthClient {
   id: string;
   clientId: string;
   name: string;
-  redirectUris: string[];
-  grantTypes?: string[];
   scopes?: string[];
+  grantTypes?: string[];
   active: boolean;
   createdAt: string;
 }
@@ -19,7 +18,8 @@ interface OAuthClientCreated {
   clientId: string;
   clientSecret: string;
   name: string;
-  redirectUris: string[];
+  scopes?: string[];
+  grantTypes?: string[];
   createdAt: string;
 }
 
@@ -31,7 +31,7 @@ export function useOAuthClients(merchantId: string) {
     queryFn: ({ signal }) =>
       client
         .get<DataResponse<OAuthClient[]>>(
-          `/merchants/${merchantId}/oauth-clients`,
+          `/gateway/v1/merchants/${merchantId}/oauth-clients`,
           { signal },
         )
         .then((r) => r.data),
@@ -40,9 +40,8 @@ export function useOAuthClients(merchantId: string) {
 
 interface CreateOAuthClientRequest {
   name: string;
-  redirectUris: string[];
-  grantTypes?: string[];
   scopes?: string[];
+  grantTypes?: string[];
 }
 
 export function useCreateOAuthClient(merchantId: string) {
@@ -53,7 +52,7 @@ export function useCreateOAuthClient(merchantId: string) {
     mutationFn: (data: CreateOAuthClientRequest) =>
       client
         .post<DataResponse<OAuthClientCreated>>(
-          `/merchants/${merchantId}/oauth-clients`,
+          `/gateway/v1/merchants/${merchantId}/oauth-clients`,
           { body: data },
         )
         .then((r) => r.data),

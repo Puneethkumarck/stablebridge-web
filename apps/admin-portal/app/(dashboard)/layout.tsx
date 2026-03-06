@@ -57,7 +57,7 @@ export default function DashboardLayout({ children }: { readonly children: React
         </nav>
         <div className="border-t border-zinc-200 p-4">
           <div className="mb-3 truncate text-sm text-zinc-600">{user?.email}</div>
-          <Button className="w-full" onClick={logout} size="sm" variant="outline">
+          <Button className="w-full" size="sm" variant="outline" onClick={logout}>
             Sign out
           </Button>
         </div>

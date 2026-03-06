@@ -31,20 +31,20 @@ export function ConfirmDialog({
   destructive = false,
 }: ConfirmDialogProps) {
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button disabled={isLoading} onClick={() => onOpenChange(false)} variant="outline">
+          <Button disabled={isLoading} variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button
             disabled={isLoading}
-            onClick={onConfirm}
             variant={destructive ? 'destructive' : 'default'}
+            onClick={onConfirm}
           >
             {isLoading ? <Spinner size="sm" /> : null}
             Confirm
