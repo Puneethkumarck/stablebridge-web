@@ -39,8 +39,10 @@ export function useApiKeys(merchantId: string) {
 
 interface CreateApiKeyRequest {
   name: string;
+  environment?: string;
   scopes?: string[];
-  expiresInDays?: number;
+  allowedIps?: string[];
+  expiresInSeconds?: number;
 }
 
 export function useCreateApiKey(merchantId: string) {
@@ -52,7 +54,7 @@ export function useCreateApiKey(merchantId: string) {
       client
         .post<DataResponse<ApiKeyCreated>>(
           `/merchants/${merchantId}/api-keys`,
-          { body: data },
+          { body: { ...data, merchantId } },
         )
         .then((r) => r.data),
     onSuccess: () => {
@@ -67,11 +69,7 @@ export function useRevokeApiKey(merchantId: string) {
 
   return useMutation({
     mutationFn: (keyId: string) =>
-      client
-        .post<DataResponse<ApiKey>>(
-          `/merchants/${merchantId}/api-keys/${keyId}/revoke`,
-        )
-        .then((r) => r.data),
+      client.delete<void>(`/merchants/${merchantId}/api-keys/${keyId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.apiKeys(merchantId) });
     },

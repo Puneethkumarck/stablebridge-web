@@ -1,0 +1,773 @@
+openapi: 3.1.0
+info:
+  title: S10 API Gateway & IAM API
+  description: OAuth2 authentication, API key management, rate limiting, and merchant
+    registry
+  contact:
+    name: StableBridge Platform
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /v1/merchants:
+    get:
+      tags:
+      - merchant-controller
+      operationId: getMerchantByExternalId
+      parameters:
+      - name: externalId
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '429':
+          description: Too Many Requests
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/MerchantResponse'
+    post:
+      tags:
+      - merchant-controller
+      operationId: createMerchant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMerchantRequest'
+        required: true
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '429':
+          description: Too Many Requests
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '201':
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/MerchantResponse'
+  /v1/merchants/{merchantId}/oauth-clients:
+    get:
+      tags:
+      - o-auth-client-controller
+      operationId: listOAuthClients
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '429':
+          description: Too Many Requests
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OAuthClientSummaryResponse'
+    post:
+      tags:
+      - o-auth-client-controller
+      operationId: createOAuthClient
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOAuthClientRequest'
+        required: true
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '429':
+          description: Too Many Requests
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '201':
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OAuthClientResponse'
+  /v1/auth/token:
+    post:
+      tags:
+      - auth-controller
+      operationId: issueToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+        required: true
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '429':
+          description: Too Many Requests
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+  /v1/auth/revoke:
+    post:
+      tags:
+      - auth-controller
+      operationId: revokeToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRevokeRequest'
+        required: true
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '429':
+          description: Too Many Requests
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '200':
+          description: OK
+  /v1/api-keys:
+    post:
+      tags:
+      - api-key-controller
+      operationId: createApiKey
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApiKeyRequest'
+        required: true
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '429':
+          description: Too Many Requests
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '201':
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiKeyResponse'
+  /v1/merchants/{merchantId}:
+    get:
+      tags:
+      - merchant-controller
+      operationId: getMerchant
+      parameters:
+      - name: merchantId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '429':
+          description: Too Many Requests
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/MerchantResponse'
+  /.well-known/jwks.json:
+    get:
+      tags:
+      - auth-controller
+      operationId: jwks
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '429':
+          description: Too Many Requests
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+  /v1/api-keys/{keyId}:
+    delete:
+      tags:
+      - api-key-controller
+      operationId: revokeApiKey
+      parameters:
+      - name: keyId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '429':
+          description: Too Many Requests
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '204':
+          description: No Content
+components:
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: string
+        status:
+          type: string
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    CorridorDto:
+      type: object
+      properties:
+        sourceCountry:
+          type: string
+        targetCountry:
+          type: string
+    CreateMerchantRequest:
+      type: object
+      properties:
+        externalId:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        country:
+          type: string
+          maxLength: 3
+          minLength: 2
+        scopes:
+          type: array
+          items:
+            type: string
+        corridors:
+          type: array
+          items:
+            $ref: '#/components/schemas/CorridorDto'
+      required:
+      - externalId
+    MerchantResponse:
+      type: object
+      properties:
+        merchantId:
+          type: string
+          format: uuid
+        externalId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        country:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+        kybStatus:
+          type: string
+        rateLimitTier:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    CreateOAuthClientRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        scopes:
+          type: array
+          items:
+            type: string
+        grantTypes:
+          type: array
+          items:
+            type: string
+    OAuthClientResponse:
+      type: object
+      properties:
+        clientId:
+          type: string
+          format: uuid
+        clientSecret:
+          type: string
+        merchantId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+        grantTypes:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+    TokenRequest:
+      type: object
+      properties:
+        grantType:
+          type: string
+          minLength: 1
+        clientId:
+          type: string
+          format: uuid
+        clientSecret:
+          type: string
+          minLength: 1
+        scope:
+          type: string
+      required:
+      - clientId
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+        expiresIn:
+          type: integer
+          format: int32
+        scope:
+          type: string
+    TokenRevokeRequest:
+      type: object
+      properties:
+        jti:
+          type: string
+          format: uuid
+      required:
+      - jti
+    CreateApiKeyRequest:
+      type: object
+      properties:
+        merchantId:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        environment:
+          type: string
+          minLength: 1
+        scopes:
+          type: array
+          items:
+            type: string
+        allowedIps:
+          type: array
+          items:
+            type: string
+        expiresInSeconds:
+          type: integer
+          format: int64
+      required:
+      - merchantId
+    ApiKeyResponse:
+      type: object
+      properties:
+        keyId:
+          type: string
+          format: uuid
+        rawKey:
+          type: string
+        keyPrefix:
+          type: string
+        name:
+          type: string
+        environment:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+        allowedIps:
+          type: array
+          items:
+            type: string
+        expiresAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+    OAuthClientSummaryResponse:
+      type: object
+      properties:
+        clientId:
+          type: string
+          format: uuid
+        merchantId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+        grantTypes:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time

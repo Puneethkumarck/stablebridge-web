@@ -61,13 +61,13 @@ export function ProfileTab() {
               </div>
               <div>
                 <dt className="text-sm font-medium text-zinc-500">Country</dt>
-                <dd className="mt-1 text-sm text-zinc-900">{merchant.countryCode}</dd>
+                <dd className="mt-1 text-sm text-zinc-900">{merchant.registrationCountry}</dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-zinc-500">Status</dt>
                 <dd className="mt-1">
                   <Badge
-                    variant={merchant.status === 'ACTIVATED' ? 'success' : 'default'}
+                    variant={merchant.status === 'ACTIVE' ? 'success' : 'default'}
                   >
                     {merchant.status}
                   </Badge>

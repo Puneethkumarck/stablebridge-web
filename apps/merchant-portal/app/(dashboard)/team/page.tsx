@@ -46,7 +46,7 @@ export default function TeamPage() {
   function handleConfirmAction() {
     if (!confirmAction) return;
     if (confirmAction.action === 'suspend') {
-      suspendUser.mutate(confirmAction.userId);
+      suspendUser.mutate({ userId: confirmAction.userId });
     } else {
       reactivateUser.mutate(confirmAction.userId);
     }

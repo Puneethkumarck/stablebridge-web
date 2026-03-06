@@ -13,27 +13,30 @@ interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   user: AuthUser;
-  mfaRequired: boolean;
+  mfaRequired?: boolean;
 }
 
-export function useSetupMfa() {
+export function useSetupMfa(merchantId: string) {
   const client = useApiClient();
 
   return useMutation({
     mutationFn: () =>
       client
-        .post<DataResponse<MfaSetupResponse>>('/mfa/setup')
+        .post<DataResponse<MfaSetupResponse>>(`/merchants/${merchantId}/auth/mfa/setup`)
         .then((r) => r.data),
   });
 }
 
-export function useVerifyMfa() {
+export function useVerifyMfa(merchantId: string) {
   const client = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (data: { code: string; mfaToken?: string }) =>
-      client.post<DataResponse<LoginResponse>>('/mfa/verify', { body: data }),
+      client.post<DataResponse<LoginResponse>>(
+        `/merchants/${merchantId}/auth/mfa/verify`,
+        { body: data },
+      ),
     onSuccess: (response) => {
       queryClient.setQueryData(authKeys.me(), response.data.user);
     },

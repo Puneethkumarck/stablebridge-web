@@ -26,25 +26,25 @@ import { Spinner } from '@stablebridge/ui/components/spinner';
 
 const STATUS_OPTIONS: { label: string; value: MerchantStatus | 'ALL' }[] = [
   { label: 'All Statuses', value: 'ALL' },
-  { label: 'Draft', value: 'DRAFT' },
-  { label: 'Pending Review', value: 'PENDING_REVIEW' },
+  { label: 'Applied', value: 'APPLIED' },
   { label: 'KYB In Progress', value: 'KYB_IN_PROGRESS' },
-  { label: 'KYB Approved', value: 'KYB_APPROVED' },
+  { label: 'KYB Manual Review', value: 'KYB_MANUAL_REVIEW' },
   { label: 'KYB Rejected', value: 'KYB_REJECTED' },
-  { label: 'Activated', value: 'ACTIVATED' },
+  { label: 'Pending Approval', value: 'PENDING_APPROVAL' },
+  { label: 'Active', value: 'ACTIVE' },
   { label: 'Suspended', value: 'SUSPENDED' },
-  { label: 'Deactivated', value: 'DEACTIVATED' },
+  { label: 'Closed', value: 'CLOSED' },
 ];
 
 const STATUS_VARIANT: Record<MerchantStatus, 'default' | 'success' | 'warning' | 'destructive' | 'brand'> = {
-  DRAFT: 'default',
-  PENDING_REVIEW: 'warning',
+  APPLIED: 'default',
   KYB_IN_PROGRESS: 'brand',
-  KYB_APPROVED: 'success',
+  KYB_MANUAL_REVIEW: 'warning',
   KYB_REJECTED: 'destructive',
-  ACTIVATED: 'success',
+  PENDING_APPROVAL: 'warning',
+  ACTIVE: 'success',
   SUSPENDED: 'destructive',
-  DEACTIVATED: 'default',
+  CLOSED: 'default',
 };
 
 function formatStatus(status: MerchantStatus): string {
@@ -124,10 +124,10 @@ export default function MerchantsPage() {
                   </TableRow>
                 ) : null}
                 {data?.data.map((merchant) => (
-                  <TableRow key={merchant.id}>
+                  <TableRow key={merchant.merchantId}>
                     <TableCell className="font-medium">{merchant.legalName}</TableCell>
                     <TableCell>{merchant.tradingName}</TableCell>
-                    <TableCell>{merchant.countryCode}</TableCell>
+                    <TableCell>{merchant.registrationCountry}</TableCell>
                     <TableCell>
                       <Badge variant={STATUS_VARIANT[merchant.status]}>
                         {formatStatus(merchant.status)}
@@ -135,7 +135,7 @@ export default function MerchantsPage() {
                     </TableCell>
                     <TableCell>
                       <Button asChild size="sm" variant="outline">
-                        <Link href={`/merchants/${merchant.id}`}>Review</Link>
+                        <Link href={`/merchants/${merchant.merchantId}`}>Review</Link>
                       </Button>
                     </TableCell>
                   </TableRow>

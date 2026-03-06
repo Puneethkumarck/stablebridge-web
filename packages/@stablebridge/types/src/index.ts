@@ -1,7 +1,12 @@
 export type {
+  ApprovedCorridor,
+  KybStatus,
+  KybVerification,
   Merchant,
   MerchantStatus,
   MerchantSummary,
+  RateLimitTier,
+  RiskTier,
 } from './merchant';
 
 export type {
@@ -9,6 +14,7 @@ export type {
   MerchantUser,
   Permission,
   Role,
+  UserStatus,
 } from './user';
 
 export type {

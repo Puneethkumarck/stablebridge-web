@@ -6,14 +6,14 @@ import { authKeys } from '../keys/auth';
 interface LoginRequest {
   email: string;
   password: string;
-  merchantId?: string;
+  merchantId: string;
 }
 
 interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   user: AuthUser;
-  mfaRequired: boolean;
+  mfaRequired?: boolean;
   mfaToken?: string;
 }
 
@@ -23,7 +23,10 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: (data: LoginRequest) =>
-      client.post<DataResponse<LoginResponse>>('/auth/login', { body: data }),
+      client.post<DataResponse<LoginResponse>>(
+        `/merchants/${data.merchantId}/auth/login`,
+        { body: { email: data.email, password: data.password } },
+      ),
     onSuccess: (response) => {
       if (!response.data.mfaRequired) {
         queryClient.setQueryData(authKeys.me(), response.data.user);
@@ -62,8 +65,10 @@ export function useForgotPassword() {
   const client = useApiClient();
 
   return useMutation({
-    mutationFn: (email: string) =>
-      client.post<void>('/auth/forgot-password', { body: { email } }),
+    mutationFn: ({ merchantId, email }: { merchantId: string; email: string }) =>
+      client.post<void>(`/merchants/${merchantId}/auth/forgot-password`, {
+        body: { email },
+      }),
   });
 }
 
@@ -71,7 +76,9 @@ export function useResetPassword() {
   const client = useApiClient();
 
   return useMutation({
-    mutationFn: (data: { token: string; newPassword: string }) =>
-      client.post<void>('/auth/reset-password', { body: data }),
+    mutationFn: ({ merchantId, ...data }: { merchantId: string; token: string; newPassword: string }) =>
+      client.post<void>(`/merchants/${merchantId}/auth/reset-password`, {
+        body: data,
+      }),
   });
 }

@@ -25,7 +25,7 @@ import { Spinner } from '@stablebridge/ui/components/spinner';
 
 const ROLES: { value: Role; label: string }[] = [
   { value: 'ADMIN', label: 'Admin' },
-  { value: 'OPERATOR', label: 'Operator' },
+  { value: 'PAYMENTS_OPERATOR', label: 'Payments Operator' },
   { value: 'VIEWER', label: 'Viewer' },
 ];
 

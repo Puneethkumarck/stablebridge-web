@@ -51,3 +51,40 @@ export function useCreateRole(merchantId: string) {
     },
   });
 }
+
+interface UpdateRoleRequest {
+  label?: string;
+  description?: string;
+  permissions?: Permission[];
+}
+
+export function useUpdateRole(merchantId: string) {
+  const client = useApiClient();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ roleId, ...data }: UpdateRoleRequest & { roleId: string }) =>
+      client
+        .patch<DataResponse<RoleDetail>>(
+          `/merchants/${merchantId}/roles/${roleId}`,
+          { body: data },
+        )
+        .then((r) => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userKeys.roles(merchantId) });
+    },
+  });
+}
+
+export function useDeleteRole(merchantId: string) {
+  const client = useApiClient();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (roleId: string) =>
+      client.delete<void>(`/merchants/${merchantId}/roles/${roleId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userKeys.roles(merchantId) });
+    },
+  });
+}

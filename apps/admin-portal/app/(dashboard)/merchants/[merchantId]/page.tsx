@@ -17,14 +17,14 @@ import { Spinner } from '@stablebridge/ui/components/spinner';
 import { MerchantActionDialog } from './merchant-action-dialog';
 
 const STATUS_VARIANT: Record<MerchantStatus, 'default' | 'success' | 'warning' | 'destructive' | 'brand'> = {
-  DRAFT: 'default',
-  PENDING_REVIEW: 'warning',
+  APPLIED: 'default',
   KYB_IN_PROGRESS: 'brand',
-  KYB_APPROVED: 'success',
+  KYB_MANUAL_REVIEW: 'warning',
   KYB_REJECTED: 'destructive',
-  ACTIVATED: 'success',
+  PENDING_APPROVAL: 'warning',
+  ACTIVE: 'success',
   SUSPENDED: 'destructive',
-  DEACTIVATED: 'default',
+  CLOSED: 'default',
 };
 
 function formatStatus(status: MerchantStatus): string {
@@ -62,9 +62,9 @@ const ACTION_CONFIG: Record<ActionType, { title: string; description: string; de
 
 function getAvailableActions(status: MerchantStatus): ActionType[] {
   switch (status) {
-    case 'KYB_APPROVED':
+    case 'PENDING_APPROVAL':
       return ['activate'];
-    case 'ACTIVATED':
+    case 'ACTIVE':
       return ['suspend', 'close'];
     case 'SUSPENDED':
       return ['reactivate', 'close'];
@@ -80,7 +80,7 @@ export default function MerchantDetailPage({
 }) {
   const { merchantId } = use(params);
   const { data: merchant, isLoading } = useMerchant(merchantId);
-  const { data: kybStatus } = useMerchantKybStatus(merchantId);
+  const { data: kybVerification } = useMerchantKybStatus(merchantId);
   const activateMutation = useActivateMerchant();
   const suspendMutation = useSuspendMerchant();
   const reactivateMutation = useReactivateMerchant();
@@ -116,16 +116,25 @@ export default function MerchantDetailPage({
 
     switch (activeAction) {
       case 'activate':
-        activateMutation.mutate(merchantId, { onSuccess });
+        activateMutation.mutate(
+          { merchantId, approvedBy: 'current-admin-id' },
+          { onSuccess },
+        );
         break;
       case 'suspend':
-        suspendMutation.mutate({ merchantId, ...(reason ? { reason } : {}) }, { onSuccess });
+        suspendMutation.mutate(
+          { merchantId, ...(reason ? { reason } : {}) },
+          { onSuccess },
+        );
         break;
       case 'reactivate':
         reactivateMutation.mutate(merchantId, { onSuccess });
         break;
       case 'close':
-        closeMutation.mutate({ merchantId, ...(reason ? { reason } : {}) }, { onSuccess });
+        closeMutation.mutate(
+          { merchantId, ...(reason ? { reason } : {}) },
+          { onSuccess },
+        );
         break;
     }
   }
@@ -172,7 +181,15 @@ export default function MerchantDetailPage({
             </div>
             <div className="flex justify-between">
               <dt className="text-zinc-500">Country</dt>
-              <dd className="font-medium text-zinc-950">{merchant.countryCode}</dd>
+              <dd className="font-medium text-zinc-950">{merchant.registrationCountry}</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-zinc-500">Entity Type</dt>
+              <dd className="font-medium text-zinc-950">{merchant.entityType}</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-zinc-500">Primary Currency</dt>
+              <dd className="font-medium text-zinc-950">{merchant.primaryCurrency}</dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-zinc-500">Contact Email</dt>
@@ -182,41 +199,74 @@ export default function MerchantDetailPage({
               <dt className="text-zinc-500">Contact Name</dt>
               <dd className="font-medium text-zinc-950">{merchant.primaryContactName}</dd>
             </div>
+            {merchant.riskTier ? (
+              <div className="flex justify-between">
+                <dt className="text-zinc-500">Risk Tier</dt>
+                <dd className="font-medium text-zinc-950">{merchant.riskTier}</dd>
+              </div>
+            ) : null}
+            {merchant.rateLimitTier ? (
+              <div className="flex justify-between">
+                <dt className="text-zinc-500">Rate Limit Tier</dt>
+                <dd className="font-medium text-zinc-950">{merchant.rateLimitTier}</dd>
+              </div>
+            ) : null}
             <div className="flex justify-between">
               <dt className="text-zinc-500">Created</dt>
               <dd className="font-medium text-zinc-950">
                 {new Date(merchant.createdAt).toLocaleDateString()}
               </dd>
             </div>
+            {merchant.activatedAt ? (
+              <div className="flex justify-between">
+                <dt className="text-zinc-500">Activated</dt>
+                <dd className="font-medium text-zinc-950">
+                  {new Date(merchant.activatedAt).toLocaleDateString()}
+                </dd>
+              </div>
+            ) : null}
           </dl>
         </div>
 
         <div className="rounded-lg border border-zinc-200 p-6">
-          <h2 className="text-lg font-semibold text-zinc-950">KYB Timeline</h2>
-          {kybStatus?.timeline.length ? (
-            <ol className="relative mt-4 ml-3 border-l border-zinc-200">
-              {kybStatus.timeline.map((event, i) => (
-                <li className="mb-6 ml-6 last:mb-0" key={i}>
-                  <span className="absolute -left-1.5 mt-1 h-3 w-3 rounded-full border-2 border-white bg-zinc-400" />
-                  <div className="flex items-center gap-2">
-                    <Badge variant={STATUS_VARIANT[event.status]}>
-                      {formatStatus(event.status)}
-                    </Badge>
-                    <time className="text-xs text-zinc-400">
-                      {new Date(event.timestamp).toLocaleString()}
-                    </time>
-                  </div>
-                  {event.note ? (
-                    <p className="mt-1 text-sm text-zinc-600">{event.note}</p>
-                  ) : null}
-                  {event.performedBy ? (
-                    <p className="mt-0.5 text-xs text-zinc-400">by {event.performedBy}</p>
-                  ) : null}
-                </li>
-              ))}
-            </ol>
+          <h2 className="text-lg font-semibold text-zinc-950">KYB Verification</h2>
+          {kybVerification ? (
+            <dl className="mt-4 space-y-3 text-sm">
+              <div className="flex justify-between">
+                <dt className="text-zinc-500">Status</dt>
+                <dd className="font-medium text-zinc-950">{kybVerification.status}</dd>
+              </div>
+              {kybVerification.provider ? (
+                <div className="flex justify-between">
+                  <dt className="text-zinc-500">Provider</dt>
+                  <dd className="font-medium text-zinc-950">{kybVerification.provider}</dd>
+                </div>
+              ) : null}
+              {kybVerification.providerRef ? (
+                <div className="flex justify-between">
+                  <dt className="text-zinc-500">Provider Reference</dt>
+                  <dd className="font-medium text-zinc-950">{kybVerification.providerRef}</dd>
+                </div>
+              ) : null}
+              {kybVerification.initiatedAt ? (
+                <div className="flex justify-between">
+                  <dt className="text-zinc-500">Initiated</dt>
+                  <dd className="font-medium text-zinc-950">
+                    {new Date(kybVerification.initiatedAt).toLocaleString()}
+                  </dd>
+                </div>
+              ) : null}
+              {kybVerification.completedAt ? (
+                <div className="flex justify-between">
+                  <dt className="text-zinc-500">Completed</dt>
+                  <dd className="font-medium text-zinc-950">
+                    {new Date(kybVerification.completedAt).toLocaleString()}
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
           ) : (
-            <p className="mt-4 text-sm text-zinc-500">No timeline events yet</p>
+            <p className="mt-4 text-sm text-zinc-500">No KYB verification data</p>
           )}
         </div>
       </div>

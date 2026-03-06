@@ -32,6 +32,7 @@ export const mockMerchantUser: MerchantUser = {
   firstName: 'Jane',
   lastName: 'Doe',
   role: 'ADMIN',
+  status: 'ACTIVE',
   permissions: [
     'payments:read',
     'payments:write',

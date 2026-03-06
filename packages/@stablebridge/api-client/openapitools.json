@@ -25,6 +25,17 @@
           "withInterfaces": true,
           "enumPropertyNaming": "UPPERCASE"
         }
+      },
+      "api-gateway-iam": {
+        "generatorName": "typescript-fetch",
+        "inputSpec": "openapi/api-gateway-iam.yaml",
+        "output": "src/generated/api-gateway-iam",
+        "additionalProperties": {
+          "supportsES6": true,
+          "typescriptThreePlus": true,
+          "withInterfaces": true,
+          "enumPropertyNaming": "UPPERCASE"
+        }
       }
     }
   }

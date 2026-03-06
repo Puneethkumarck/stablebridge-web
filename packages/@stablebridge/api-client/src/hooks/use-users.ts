@@ -88,15 +88,21 @@ export function useUpdateUser(merchantId: string, userId: string) {
   });
 }
 
+interface SuspendUserRequest {
+  reason?: string;
+  suspendedBy?: string;
+}
+
 export function useSuspendUser(merchantId: string) {
   const client = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (userId: string) =>
+    mutationFn: ({ userId, ...body }: SuspendUserRequest & { userId: string }) =>
       client
         .post<DataResponse<MerchantUser>>(
           `/merchants/${merchantId}/users/${userId}/suspend`,
+          { body },
         )
         .then((r) => r.data),
     onSuccess: () => {
@@ -116,6 +122,19 @@ export function useReactivateUser(merchantId: string) {
           `/merchants/${merchantId}/users/${userId}/reactivate`,
         )
         .then((r) => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+    },
+  });
+}
+
+export function useDeactivateUser(merchantId: string) {
+  const client = useApiClient();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId: string) =>
+      client.delete<void>(`/merchants/${merchantId}/users/${userId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.lists() });
     },

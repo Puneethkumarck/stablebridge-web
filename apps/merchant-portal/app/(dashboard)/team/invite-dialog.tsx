@@ -28,7 +28,7 @@ import { Spinner } from '@stablebridge/ui/components/spinner';
 
 const ROLES: { value: Role; label: string }[] = [
   { value: 'ADMIN', label: 'Admin' },
-  { value: 'OPERATOR', label: 'Operator' },
+  { value: 'PAYMENTS_OPERATOR', label: 'Payments Operator' },
   { value: 'VIEWER', label: 'Viewer' },
 ];
 
@@ -36,7 +36,7 @@ const schema = z.object({
   email: z.string().email('Please enter a valid email'),
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  role: z.enum(['ADMIN', 'OPERATOR', 'VIEWER'] as const),
+  role: z.enum(['ADMIN', 'PAYMENTS_OPERATOR', 'VIEWER', 'DEVELOPER'] as const),
 });
 
 type FormData = z.infer<typeof schema>;
